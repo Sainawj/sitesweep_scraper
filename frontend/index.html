@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Scraper & Ingestor</title>
+    <title>sitesweep</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/main.js" defer></script>
 </head>
@@ -33,6 +33,24 @@
                 <button type="submit">Scrape Data</button>
             </form>
             <div id="result"></div>
+        </section>
+
+        <!-- Recent Searches Table -->
+        <section id="recent-searches">
+            <h2>Recent Searches</h2>
+            <table id="searches-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>URL</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Records will be inserted here by JavaScript -->
+                </tbody>
+            </table>
         </section>
     </main>
 
