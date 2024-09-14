@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Flask==2.3.3                # Core Flask framework for web development
 Flask-RESTful==0.3.9        # For creating RESTful APIs
 Flask-SQLAlchemy==3.0.5     # For database ORM integration with SQLAlchemy
@@ -10,3 +11,16 @@ mysqlclient==2.2.0          # MySQL driver for Flask-SQLAlchemy
 python-dotenv==1.0.0        # For loading environment variables from .env
 pytest==7.4.2               # For backend testing (optional)
 
+=======
+Flask==2.3.3                # Core Flask framework for web development
+Flask-RESTful==0.3.9        # For creating RESTful APIs
+Flask-SQLAlchemy==3.0.5     # For database ORM integration with SQLAlchemy
+Flask-Migrate==4.0.4        # For handling database migrations
+requests==2.31.0            # To handle HTTP requests in scraper.py
+beautifulsoup4==4.12.2      # For web scraping (HTML parsing)
+lxml==4.9.3                 # For fast parsing in BeautifulSoup
+pandas==2.0.3               # For handling data ingestion and manipulation
+mysqlclient==2.2.0          # MySQL driver for Flask-SQLAlchemy
+python-dotenv==1.0.0        # For loading environment variables from .env
+pytest==7.4.2               # For backend testing (optional)
+>>>>>>> c874f3ad05f6fed27dff1c361b2e3f26fd6fac78
