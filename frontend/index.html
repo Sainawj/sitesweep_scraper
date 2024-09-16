@@ -3,42 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sitesweep</title>
+    <title>SiteSweep Scraper</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/main.js" defer></script>
 </head>
 <body>
-    <header>
-        <div class="intro">
-            <img src="images/coverimage.jpg" alt="Cover Image" class="cover-image">
-            <div class="intro-content">
-                <h1>Data Scraper & Ingestor</h1>
-                <p>Efficiently scrape and manage data from various sources</p>
-                <nav>
-                    <ul class="nav-links">
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="history.html">History</a></li>
-                        <li><a href="#" class="btn" id="scrape-btn">Start Scraping</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <main>
-        <section id="scrape">
-            <h2>Enter URL to Scrape</h2>
-            <form id="scrape-form">
-                <input type="text" id="url-input" placeholder="Enter URL here" required>
+    <div class="container">
+        <h1>Website Data Scraper</h1>
+        
+        <!-- URL Input and Submit -->
+        <div class="scrape-form">
+            <form id="scrapeForm">
+                <label for="url">Enter URL to Scrape:</label>
+                <input type="url" id="url" name="url" placeholder="https://example.com" required>
                 <button type="submit">Scrape Data</button>
             </form>
-            <div id="result"></div>
-        </section>
+        </div>
 
-        <!-- Recent Searches Table -->
-        <section id="recent-searches">
-            <h2>Recent Searches</h2>
-            <table id="searches-table">
+        <!-- Scraping Results -->
+        <div id="scrapeResult" class="scrape-result">
+            <h2>Scraped Data</h2>
+            <p><strong>Title:</strong> <span id="resultTitle"></span></p>
+            <p><strong>Description:</strong> <span id="resultDescription"></span></p>
+            <p><strong>Emails:</strong> <span id="resultEmails"></span></p>
+            <p><strong>Phone Numbers:</strong> <span id="resultPhones"></span></p>
+            <p><strong>Addresses:</strong> <span id="resultAddresses"></span></p>
+        </div>
+
+        <!-- Scraping History -->
+        <div class="history-section">
+            <h2>Previous Scraped Sites</h2>
+            <table id="historyTable">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -48,42 +43,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Records will be inserted here by JavaScript -->
+                    <!-- Records will be inserted dynamically here -->
                 </tbody>
             </table>
-        </section>
-    </main>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const form = document.getElementById('scrape-form');
-            const resultDiv = document.getElementById('result');
-
-            form.addEventListener('submit', async function(event) {
-                event.preventDefault();
-                const url = document.getElementById('url-input').value;
-
-                try {
-                    const response = await fetch('/api/scrape', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: new URLSearchParams({ url: url })
-                    });
-
-                    const data = await response.json();
-                    if (response.ok) {
-                        resultDiv.innerHTML = `<p>Scraping successful! Data saved.</p>`;
-                    } else {
-                        resultDiv.innerHTML = `<p>${data.message}</p>`;
-                    }
-                } catch (error) {
-                    resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
-                }
-            });
-        });
-    </script>
+        </div>
+    </div>
 </body>
 </html>
-

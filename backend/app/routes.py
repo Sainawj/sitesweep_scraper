@@ -18,22 +18,28 @@ def history():
 # API endpoint to trigger the scraping process
 @app.route('/api/scrape', methods=['POST'])
 def scrape():
-    url = request.form.get('url')  # Retrieve the URL from the form data
+    url = request.form.get('url')
     if not url:
         return jsonify({"message": "URL is required"}), 400
-    
     try:
-        # Call the scraper function to process the URL
+        # Call the scraper function
         scraped_data = scrape_data(url)
 
-        # Create a new entry in the ScrapingHistory model
-        new_entry = ScrapingHistory(url=url, data=scraped_data)
+        # Store the data in the database
+        new_entry = ScrapingHistory(
+            url=url,
+            data=scraped_data.get('raw_html', ''),
+            title=scraped_data.get('title', 'No title'),
+            description=scraped_data.get('description', 'No description'),
+            emails="; ".join(scraped_data.get('emails', [])),
+            phones="; ".join(scraped_data.get('phones', [])),
+            addresses="; ".join(scraped_data.get('addresses', []))
+        )
         db.session.add(new_entry)
         db.session.commit()
 
-        return jsonify({"message": "Scraping successful!"}), 200
+        return jsonify({"message": "Scraping successful!", "data": scraped_data}), 200
     except Exception as e:
-        # Log the exception for debugging
         app.logger.error(f"Scraping error: {str(e)}")
         return jsonify({"message": f"Error: {str(e)}"}), 500
 
