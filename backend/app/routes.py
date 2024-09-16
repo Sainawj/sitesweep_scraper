@@ -1,22 +1,23 @@
-from flask import render_template, jsonify, request
-from . import app, db
+from flask import Blueprint, jsonify, request
 from .scraper import scrape_data
 from .models import ScrapingHistory
+from . import db
+
+# Define a Blueprint for routes
+main = Blueprint('main', __name__)
 
 # Serve the homepage
-@app.route('/')
+@main.route('/')
 def home():
-    # Using send_static_file to serve static HTML from the frontend directory
-    return app.send_static_file('index.html')
+    return jsonify({"message": "Welcome to the scraping app!"})
 
 # Serve the history page
-@app.route('/history')
+@main.route('/history')
 def history():
-    # Using send_static_file to serve static HTML from the frontend directory
-    return app.send_static_file('history.html')
+    return jsonify({"message": "History page"})
 
 # API endpoint to trigger the scraping process
-@app.route('/api/scrape', methods=['POST'])
+@main.route('/api/scrape', methods=['POST'])
 def scrape():
     url = request.form.get('url')
     if not url:
@@ -52,11 +53,10 @@ def scrape():
             "data": scraped_data
         }), 200
     except Exception as e:
-        app.logger.error(f"Scraping error: {str(e)}")
         return jsonify({"message": f"Error: {str(e)}"}), 500
 
 # API endpoint to retrieve the scraping history
-@app.route('/api/history', methods=['GET'])
+@main.route('/api/history', methods=['GET'])
 def get_history():
     try:
         # Query all records from the ScrapingHistory model
@@ -72,7 +72,4 @@ def get_history():
         ]
         return jsonify(history_list), 200
     except Exception as e:
-        # Log the error for debugging
-        app.logger.error(f"History fetching error: {str(e)}")
         return jsonify({"message": f"Error fetching history: {str(e)}"}), 500
-
