@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     scrapeForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(scrapeForm);
+        
+        // Make a request to the scraping API
         fetch('/api/scrape', {
             method: 'POST',
             body: formData
