@@ -19,17 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.message === "Scraping successful!") {
                 // Populate the result section
-                resultTitle.textContent = data.data.title;
-                resultDescription.textContent = data.data.description;
-                resultEmails.textContent = data.data.emails.join(', ') || "No emails found";
-                resultPhones.textContent = data.data.phones.join(', ') || "No phone numbers found";
-                resultAddresses.textContent = data.data.addresses.join(', ') || "No addresses found";
+                resultTitle.textContent = data.data.title || "No title found";
+                resultDescription.textContent = data.data.description || "No description found";
+                resultEmails.textContent = data.data.emails.length ? data.data.emails.join(', ') : "No emails found";
+                resultPhones.textContent = data.data.phones.length ? data.data.phones.join(', ') : "No phone numbers found";
+                resultAddresses.textContent = data.data.addresses.length ? data.data.addresses.join(', ') : "No addresses found";
             } else {
                 alert("Scraping failed: " + data.message);
             }
         })
         .catch(error => {
             console.error("Error:", error);
+            alert("An error occurred during scraping. Please try again.");
         });
     });
 
