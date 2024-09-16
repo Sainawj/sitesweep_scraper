@@ -76,3 +76,20 @@ def get_history():
         return jsonify(history_list), 200
     except Exception as e:
         return jsonify({"message": f"Error fetching history: {str(e)}"}), 500
+
+# API endpoint to retrieve scraped data for a specific history entry
+@main.route('/api/scraped_data/<int:id>', methods=['GET'])
+def get_scraped_data(id):
+    try:
+        # Query the ScrapingHistory model for the specific ID
+        record = ScrapingHistory.query.get_or_404(id)
+        scraped_data = {
+            "title": record.title,
+            "description": record.description,
+            "emails": record.emails,
+            "phones": record.phones,
+            "addresses": record.addresses
+        }
+        return jsonify(scraped_data), 200
+    except Exception as e:
+        return jsonify({"message": f"Error fetching scraped data: {str(e)}"}), 500
