@@ -7,6 +7,7 @@ CREATE TABLE scraping_history (
     description TEXT,
     emails TEXT,
     phones TEXT,
-    addresses TEXT;
+    addresses TEXT,
     status VARCHAR(50) DEFAULT 'Completed'
 );
+
