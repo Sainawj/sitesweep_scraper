@@ -3,50 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SiteSweep Scraper</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <script src="js/main.js" defer></script>
+    <title>Sitesweep</title>
+    <script src="/static/main.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Website Data Scraper</h1>
-        
-        <!-- URL Input and Submit -->
-        <div class="scrape-form">
-            <form id="scrapeForm">
-                <label for="url">Enter URL to Scrape:</label>
-                <input type="url" id="url" name="url" placeholder="https://example.com" required>
-                <button type="submit">Scrape Data</button>
-            </form>
-        </div>
 
-        <!-- Scraping Results -->
-        <div id="scrapeResult" class="scrape-result">
-            <h2>Scraped Data</h2>
-            <p><strong>Title:</strong> <span id="resultTitle"></span></p>
-            <p><strong>Description:</strong> <span id="resultDescription"></span></p>
-            <p><strong>Emails:</strong> <span id="resultEmails"></span></p>
-            <p><strong>Phone Numbers:</strong> <span id="resultPhones"></span></p>
-            <p><strong>Addresses:</strong> <span id="resultAddresses"></span></p>
-        </div>
+    <h1>Sitesweep: Web Scraping Tool</h1>
 
-        <!-- Scraping History -->
-        <div class="history-section">
-            <h2>Previous Scraped Sites</h2>
-            <table id="historyTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>URL</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Records will be inserted dynamically here -->
-                </tbody>
-            </table>
-        </div>
+    <!-- Form to input the URL -->
+    <form id="scrapeForm">
+        <label for="url">Enter URL to Scrape:</label>
+        <input type="text" id="url" name="url" placeholder="https://example.com" required>
+        <button type="submit">Scrape</button>
+    </form>
+
+    <h2>Scraped Data</h2>
+    <div id="scrapedResults">
+        <p><strong>Title:</strong> <span id="resultTitle">N/A</span></p>
+        <p><strong>Description:</strong> <span id="resultDescription">N/A</span></p>
+        <p><strong>Emails:</strong> <span id="resultEmails">N/A</span></p>
+        <p><strong>Phones:</strong> <span id="resultPhones">N/A</span></p>
+        <p><strong>Addresses:</strong> <span id="resultAddresses">N/A</span></p>
     </div>
+
+    <h2>Scraping History</h2>
+    <table id="historyTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>URL</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamic rows go here -->
+        </tbody>
+    </table>
+
 </body>
 </html>
