@@ -62,8 +62,8 @@ def scrape():
 @main.route('/api/history', methods=['GET'])
 def get_history():
     try:
-        # Query all records from the ScrapingHistory model
-        history_records = ScrapingHistory.query.all()
+        # Query the latest 10 records from the ScrapingHistory model
+        history_records = ScrapingHistory.query.order_by(ScrapingHistory.date.desc()).limit(10).all()
         history_list = [
             {
                 "id": record.id,
