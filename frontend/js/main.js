@@ -1,83 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sitesweep</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
-    <style>
-        /* Inline CSS for the popup */
-        #popup {
-            display: none; /* Initially hidden */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            z-index: 1000;
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    const scrapeForm = document.getElementById('scrapeForm');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultDescription = document.getElementById('resultDescription');
+    const resultEmails = document.getElementById('resultEmails');
+    const resultPhones = document.getElementById('resultPhones');
+    const resultAddresses = document.getElementById('resultAddresses');
+    const historyTableBody = document.querySelector('#historyTable tbody');
 
-        #popupContent {
-            margin: 15% auto;
-            padding: 20px;
-            background: #333;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-        }
+    // Handle scraping form submission
+    scrapeForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(scrapeForm);
 
-        #closePopup {
-            float: right;
-            cursor: pointer;
-            font-size: 20px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Sitesweep: Web Scraping Tool</h1>
+        // Make a request to the scraping API
+        fetch('/api/scrape', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === "Scraping successful!") {
+                // Populate the result section
+                resultTitle.textContent = data.data.title || "No title found";
+                resultDescription.textContent = data.data.description || "No description found";
+                resultEmails.textContent = data.data.emails.length ? data.data.emails.join(', ') : "No emails found";
+                resultPhones.textContent = data.data.phones.length ? data.data.phones.join(', ') : "No phone numbers found";
+                resultAddresses.textContent = data.data.addresses.length ? data.data.addresses.join(', ') : "No addresses found";
 
-    <!-- Form to input the URL -->
-    <form id="scrapeForm">
-        <label for="url">Enter URL to Scrape:</label>
-        <input type="text" id="url" name="url" placeholder="https://example.com" required>
-        <button type="submit">Scrape</button>
-    </form>
+                // Optionally, fetch the history again to update the table
+                fetchHistory();
+            } else {
+                alert("Scraping failed: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred during scraping. Please try again.");
+        });
+    });
 
-    <h2>Scraped Data</h2>
-    <div id="scrapedResults">
-        <p><strong>Title:</strong> <span id="resultTitle">N/A</span></p>
-        <p><strong>Description:</strong> <span id="resultDescription">N/A</span></p>
-        <p><strong>Emails:</strong> <span id="resultEmails">N/A</span></p>
-        <p><strong>Phones:</strong> <span id="resultPhones">N/A</span></p>
-        <p><strong>Addresses:</strong> <span id="resultAddresses">N/A</span></p>
-    </div>
+    // Function to open popup with scraped data
+    function openPopup(data) {
+        const popup = document.getElementById('popup');
+        const scrapedDataDiv = document.getElementById('scrapedData');
+        scrapedDataDiv.innerHTML = `
+            <p><strong>Title:</strong> ${data.title || "No title found"}</p>
+            <p><strong>Description:</strong> ${data.description || "No description found"}</p>
+            <p><strong>Emails:</strong> ${data.emails.length ? data.emails.join(', ') : "No emails found"}</p>
+            <p><strong>Phones:</strong> ${data.phones.length ? data.phones.join(', ') : "No phone numbers found"}</p>
+            <p><strong>Addresses:</strong> ${data.addresses.length ? data.addresses.join(', ') : "No addresses found"}</p>
+        `;
+        popup.style.display = 'block';
+    }
 
-    <h2>Scraping History</h2>
-    <table id="historyTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>URL</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Dynamic rows go here -->
-        </tbody>
-    </table>
+    // Close popup when clicking close button
+    document.getElementById('closePopup').addEventListener('click', function() {
+        document.getElementById('popup').style.display = 'none';
+    });
 
-    <!-- Popup Modal -->
-    <div id="popup">
-        <div id="popupContent">
-            <span id="closePopup">&times;</span>
-            <h2>Scraped Data</h2>
-            <div id="scrapedData">Loading...</div>
-        </div>
-    </div>
-</body>
-</html>
+    // Fetch and populate scraping history
+    function fetchHistory() {
+        fetch('/api/history')
+            .then(response => response.json())
+            .then(data => {
+                // Clear the table body
+                historyTableBody.innerHTML = '';
+                // Populate table rows with history records
+                data.slice(0, 10).forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${record.id}</td>
+                        <td>${record.url}</td>
+                        <td>${new Date(record.date).toLocaleString()}</td>
+                        <td>${record.status}</td>
+                        <td><a href="#" onclick="fetchScrapedData(${record.id}); return false;">View Details</a></td>
+                    `;
+                    historyTableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching history:", error);
+            });
+    }
+
+    // Function to fetch scraped data by ID
+    window.fetchScrapedData = function(id) {
+        fetch(`/api/scraped_data/${id}`)
+            .then(response => response.json())
+            .then(data => openPopup(data))
+            .catch(error => console.error('Error fetching scraped data:', error));
+    };
+
+    // Fetch history on page load
+    fetchHistory();
+});
