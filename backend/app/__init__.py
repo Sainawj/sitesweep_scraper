@@ -1,28 +1,26 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-import pymysql
 from flask_migrate import Migrate
-from .models import db
 
-# Point to frontend directory
-app = Flask(__name__,
-            static_folder="../../frontend",  # Adjust relative path for frontend
-            static_url_path="/")             # Root URL for static files
+# Initialize extensions
+db = SQLAlchemy()
+migrate = Migrate()
 
-# Load config settings
-app.config.from_object('config')
+def create_app():
+    app = Flask(__name__)
+    
+    # Configurations, e.g., database settings
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://<user>:<password>@<host>/<database>'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
+    # Initialize extensions
+    db.init_app(app)
+    migrate.init_app(app, db)
 
-# Initialize SQLAlchemy and CORS
-db = SQLAlchemy(app)
-CORS(app)
+    # Import and register blueprints or routes
+    from . import routes
+    app.register_blueprint(routes.app)  # if using blueprints
 
-# Install pymysql
-pymysql.install_as_MySQLdb()
+    return app
 
-# Initialize Migrate with the app and the database
-migrate = Migrate(app, db)
-
-# Import routes and models
-from . import routes, models
 
