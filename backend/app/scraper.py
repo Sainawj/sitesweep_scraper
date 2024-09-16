@@ -22,17 +22,21 @@ def scrape_data(url):
 
         # Phone Numbers (improved regex for international formats and keyword-based extraction)
         phone_keywords = ["Tel:", "Phone:", "Contact:", "Mobile:", "Cell:"]
-        phone_numbers = []
+        phone_numbers = set()  # Use a set to avoid duplicates
         
         # Regex pattern to capture phone numbers
-        phone_pattern = re.compile(r'\+?\d{10,}|\b0\d{9,}')
-        
+        phone_pattern = re.compile(r'\+?\d[\d\s\-\(\)\/]{8,}\d')
+
         for keyword in phone_keywords:
             found_texts = soup.find_all(text=re.compile(rf'\b{keyword}\b', re.IGNORECASE))
             for text in found_texts:
-                # Extract phone numbers from the text following the keyword
+                # Extract phone numbers from the text
                 potential_numbers = phone_pattern.findall(text)
-                phone_numbers.extend(potential_numbers)
+                for number in potential_numbers:
+                    # Clean up the numbers to remove extra spaces or symbols
+                    cleaned_number = re.sub(r'\D', '', number)
+                    if len(cleaned_number) >= 10:  # Ensure it's a valid phone number length
+                        phone_numbers.add(number.strip())
         
         # Addresses (simplified, based on common address keywords)
         addresses = []
@@ -45,7 +49,7 @@ def scrape_data(url):
             "title": page_title,
             "description": meta_description,
             "emails": emails,
-            "phones": phone_numbers,
+            "phones": list(phone_numbers),
             "addresses": addresses
         }
 
