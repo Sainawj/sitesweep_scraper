@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         const formData = new FormData(scrapeForm);
 
-        // Make a request to the scraping API
         fetch('/api/scrape', {
             method: 'POST',
             body: formData
@@ -63,9 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/api/history')
             .then(response => response.json())
             .then(data => {
-                // Clear the table body
                 historyTableBody.innerHTML = '';
-                // Populate table rows with history records
                 data.slice(0, 10).forEach(record => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -91,6 +88,5 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error fetching scraped data:', error));
     };
 
-    // Fetch history on page load
     fetchHistory();
 });
