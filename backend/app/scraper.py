@@ -20,24 +20,34 @@ def scrape_data(url):
         # Emails
         emails = re.findall(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b', response.text)
 
-        # Phone Numbers (improved regex for international formats and keyword-based extraction)
+        # Phone Numbers (improved regex and context-based extraction)
         phone_keywords = ["Tel:", "Phone:", "Contact:", "Mobile:", "Cell:"]
         phone_numbers = set()  # Use a set to avoid duplicates
-        
+
         # Regex pattern to capture phone numbers
         phone_pattern = re.compile(r'\+?\d[\d\s\-\(\)\/]{8,}\d')
 
+        # Search in visible text
         for keyword in phone_keywords:
+            # Find all text that contains the keyword
             found_texts = soup.find_all(text=re.compile(rf'\b{keyword}\b', re.IGNORECASE))
             for text in found_texts:
-                # Extract phone numbers from the text
+                # Extract potential phone numbers
                 potential_numbers = phone_pattern.findall(text)
                 for number in potential_numbers:
                     # Clean up the numbers to remove extra spaces or symbols
                     cleaned_number = re.sub(r'\D', '', number)
                     if len(cleaned_number) >= 10:  # Ensure it's a valid phone number length
                         phone_numbers.add(number.strip())
-        
+
+        # Additional check in all text for phone patterns
+        all_text = soup.get_text()
+        additional_numbers = phone_pattern.findall(all_text)
+        for number in additional_numbers:
+            cleaned_number = re.sub(r'\D', '', number)
+            if len(cleaned_number) >= 10:  # Ensure it's a valid phone number length
+                phone_numbers.add(number.strip())
+
         # Addresses (simplified, based on common address keywords)
         addresses = []
         address_keywords = ["P. O. Box", "P.O. Box", "Street", "St.", "Avenue", "Ave.", "Road", "Rd.", "Boulevard", "Blvd.", "Drive", "Dr.", "Lane", "Ln.", "Way", "Plaza"]
