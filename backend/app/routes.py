@@ -14,7 +14,7 @@ def index():
     return render_template('index.html')  # Renders the index.html from frontend
 
 # Serve the history page
-@main_routes.route('/history')
+@app.route('/history')
 def history():
     return render_template('history.html')  # Renders history.html from frontend
 
