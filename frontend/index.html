@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     <style>
-        /* Simple CSS for debugging */
+        /* Inline CSS for the popup */
         #popup {
-            display: none;
+            display: none; /* Initially hidden */
             position: fixed;
             top: 0;
             left: 0;
@@ -76,7 +76,7 @@
         <div id="popupContent">
             <span id="closePopup">&times;</span>
             <h2>Scraped Data</h2>
-            <div id="scrapedData"></div>
+            <div id="scrapedData">Loading...</div>
         </div>
     </div>
 </body>
