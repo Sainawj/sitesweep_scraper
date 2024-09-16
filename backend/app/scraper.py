@@ -24,7 +24,7 @@ def scrape_data(url):
 
         # Addresses (simplified, based on common address keywords)
         addresses = []
-        address_keywords = ["Street", "St.", "Avenue", "Ave.", "Road", "Rd.", "Boulevard", "Blvd.", "Drive", "Dr.", "Lane", "Ln.", "Way", "Plaza"]
+        address_keywords = ["P. O. Box", "P.O. Box","P.O Box", "PO Box", "Street", "St.", "Avenue", "Ave.", "Road", "Rd.", "Boulevard", "Blvd.", "Drive", "Dr.", "Lane", "Ln.", "Way", "Plaza"]
         for keyword in address_keywords:
             addresses += soup.find_all(text=re.compile(rf'\b{keyword}\b'))
 
