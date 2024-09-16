@@ -21,7 +21,7 @@ def scrape_data(url):
         emails = re.findall(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b', response.text)
 
         # Phone Numbers (improved regex for international formats)
-        phones = re.findall(r'\+?[1-9]\d{1,14}', response.text)
+        phones = re.findall(r'\+?\d{10,}|\b0\d{9,}', response.text)
 
         # Addresses (simplified, based on common address keywords)
         addresses = []
