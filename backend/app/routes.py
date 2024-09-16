@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from .scraper import scrape_data
 from .models import ScrapingHistory
 from . import db
@@ -8,13 +8,11 @@ main = Blueprint('main', __name__)
 
 # Serve the homepage
 @main.route('/')
-#def home():
-    #return jsonify({"message": "Welcome to the scraping app!"})
 def index():
     return render_template('index.html')  # Renders the index.html from frontend
 
 # Serve the history page
-@app.route('/history')
+@main.route('/history')
 def history():
     return render_template('history.html')  # Renders history.html from frontend
 
