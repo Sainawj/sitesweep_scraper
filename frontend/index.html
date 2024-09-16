@@ -40,6 +40,14 @@
             <!-- Dynamic rows go here -->
         </tbody>
     </table>
+<!-- Popup Modal -->
+    <div id="popup" style="display: none;">
+        <div id="popupContent">
+            <span id="closePopup">&times;</span>
+            <h2>Scraped Data</h2>
+            <div id="scrapedData"></div>
+        </div>
+    </div>
 <script>
         async function fetchHistory() {
             try {
