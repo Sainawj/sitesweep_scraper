@@ -1,83 +1,26 @@
-/* General Styles */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-}
-
-header {
-    position: relative;
-    color: white;
-    text-align: center;
-}
-
-.cover-image-container {
-    position: relative;
-    overflow: hidden;
-}
-
-.cover-image {
+#popup {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    z-index: 1000; /* Ensure it's on top */
 }
 
-.intro-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+#popupContent {
+    margin: 15% auto;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.5);
+    background: #333;
     border-radius: 10px;
     width: 80%;
-    max-width: 800px;
+    max-width: 600px;
 }
 
-.intro-content h1 {
-    margin: 0;
-    font-size: 2.5em;
+#closePopup {
+    float: right;
+    cursor: pointer;
+    font-size: 20px;
 }
-
-.intro-content p {
-    font-size: 1.2em;
-}
-
-.nav-links {
-    list-style: none;
-    padding: 0;
-}
-
-.nav-links li {
-    display: inline;
-    margin: 0 15px;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.btn {
-    background-color: #007bff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: white;
-    text-decoration: none;
-}
-
-section {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.feature {
-    display: flex;
-    align-items
