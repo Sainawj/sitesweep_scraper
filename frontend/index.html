@@ -3,80 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sitesweep: Know page contents on click!">
     <title>Sitesweep</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
-    <style>
-        /* Inline CSS for the popup */
-        #popup {
-            display: none; /* Initially hidden */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            z-index: 1000;
-        }
-
-        #popupContent {
-            margin: 15% auto;
-            padding: 20px;
-            background: #333;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-        }
-
-        #closePopup {
-            float: right;
-            cursor: pointer;
-            font-size: 20px;
-        }
-    </style>
 </head>
 <body>
-    <h1>Sitesweep: Web Scraping Tool</h1>
+    <header>
+        <div class="cover-image">
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="https://github.com/Sainawj">Github Repository</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="title-overlay">
+                <h1>Sitesweep: Web Scraping Tool</h1>
+                <p>Scrape and Manage Data Efficiently</p>
+            </div>
+        </div>
+    </header>
 
-    <!-- Form to input the URL -->
-    <form id="scrapeForm">
-        <label for="url">Enter URL to Scrape:</label>
-        <input type="text" id="url" name="url" placeholder="https://example.com" required>
-        <button type="submit">Scrape</button>
-    </form>
+    <section id="about" class="section-padding">
+        <h2>About Sitesweep</h2>
+        <p>Sitesweep is a tool designed to scrape and manage data from various sources. With a user-friendly interface and powerful backend, it allows you to extract metadata, contact information, and more from web pages.</p>
+    </section>
 
-    <h2>Scraped Data</h2>
-    <div id="scrapedResults">
-        <p><strong>Title:</strong> <span id="resultTitle">N/A</span></p>
-        <p><strong>Description:</strong> <span id="resultDescription">N/A</span></p>
-        <p><strong>Emails:</strong> <span id="resultEmails">N/A</span></p>
-        <p><strong>Phones:</strong> <span id="resultPhones">N/A</span></p>
-        <p><strong>Addresses:</strong> <span id="resultAddresses">N/A</span></p>
-    </div>
+    <section id="scraping" class="section-padding">
+        <h2>Scrape Data</h2>
+        <!-- Form to input the URL -->
+        <form id="scrapeForm">
+            <label for="url">Enter URL to Scrape:</label>
+            <input type="text" id="url" name="url" placeholder="https://example.com" required>
+            <button type="submit">Scrape</button>
+        </form>
 
-    <h2>Scraping History</h2>
-    <table id="historyTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>URL</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Dynamic rows go here -->
-        </tbody>
-    </table>
+        <h2>Scraped Data</h2>
+        <div id="scrapedResults">
+            <p><strong>Title:</strong> <span id="resultTitle">N/A</span></p>
+            <p><strong>Description:</strong> <span id="resultDescription">N/A</span></p>
+            <p><strong>Emails:</strong> <span id="resultEmails">N/A</span></p>
+            <p><strong>Phones:</strong> <span id="resultPhones">N/A</span></p>
+            <p><strong>Addresses:</strong> <span id="resultAddresses">N/A</span></p>
+        </div>
+    </section>
+
+    <section id="history" class="section-padding">
+        <h2>Scraping History</h2>
+        <table id="historyTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>URL</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic rows go here -->
+            </tbody>
+        </table>
+    </section>
+
+    <footer id="contact" class="footer">
+        <h2>Contact Me</h2>
+        <p>Feel free to reach out via email: <a href="mailto:jonathansaina@gmail.com">sainajonathan@gmail.com</a></p>
+        
+    </footer>
 
     <!-- Popup Modal -->
-    <div id="popup">
+    <div id="popup" style="display: none;">
         <div id="popupContent">
             <span id="closePopup">&times;</span>
             <h2>Scraped Data</h2>
-            <div id="scrapedData">Loading...</div>
+            <div id="scrapedData"></div>
         </div>
     </div>
 </body>
