@@ -22,23 +22,35 @@ def scrape():
     if not url:
         return jsonify({"message": "URL is required"}), 400
     try:
-        # Call the scraper function
+        # Call the scraper function to get the metadata and contact info
         scraped_data = scrape_data(url)
 
-        # Store the data in the database
+        # Extract metadata from the scraped data
+        title = scraped_data.get('title', '')
+        description = scraped_data.get('description', '')
+        emails = ', '.join(scraped_data.get('emails', []))
+        phones = ', '.join(scraped_data.get('phones', []))
+        addresses = ', '.join(scraped_data.get('addresses', []))
+
+        # Create a new entry in the database with metadata and contact info
         new_entry = ScrapingHistory(
-            url=url,
-            data=scraped_data.get('raw_html', ''),
-            title=scraped_data.get('title', 'No title'),
-            description=scraped_data.get('description', 'No description'),
-            emails="; ".join(scraped_data.get('emails', [])),
-            phones="; ".join(scraped_data.get('phones', [])),
-            addresses="; ".join(scraped_data.get('addresses', []))
+            url=url, 
+            title=title,
+            description=description,
+            emails=emails,
+            phones=phones,
+            addresses=addresses,
+            data=str(scraped_data),  # Save the full scraped data (if needed) as a string
+            status="Completed"
         )
         db.session.add(new_entry)
         db.session.commit()
 
-        return jsonify({"message": "Scraping successful!", "data": scraped_data}), 200
+        # Return the scraped data to the front-end
+        return jsonify({
+            "message": "Scraping successful!", 
+            "data": scraped_data
+        }), 200
     except Exception as e:
         app.logger.error(f"Scraping error: {str(e)}")
         return jsonify({"message": f"Error: {str(e)}"}), 500
