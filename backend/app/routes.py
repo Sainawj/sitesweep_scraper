@@ -8,13 +8,15 @@ main = Blueprint('main', __name__)
 
 # Serve the homepage
 @main.route('/')
-def home():
-    return jsonify({"message": "Welcome to the scraping app!"})
+#def home():
+    #return jsonify({"message": "Welcome to the scraping app!"})
+def index():
+    return render_template('index.html')  # Renders the index.html from frontend
 
 # Serve the history page
-@main.route('/history')
+@main_routes.route('/history')
 def history():
-    return jsonify({"message": "History page"})
+    return render_template('history.html')  # Renders history.html from frontend
 
 # API endpoint to trigger the scraping process
 @main.route('/api/scrape', methods=['POST'])
