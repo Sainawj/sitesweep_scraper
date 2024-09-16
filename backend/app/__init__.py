@@ -12,7 +12,8 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-
+        static_folder='../../frontend',  # Serve static files
+        template_folder='../../frontend')  # Serve HTML templates
     # Load config from environment variables
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
