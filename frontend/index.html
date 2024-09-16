@@ -6,6 +6,35 @@
     <title>Sitesweep</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <style>
+        /* Simple CSS for debugging */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            z-index: 1000;
+        }
+
+        #popupContent {
+            margin: 15% auto;
+            padding: 20px;
+            background: #333;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        #closePopup {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1>Sitesweep: Web Scraping Tool</h1>
@@ -34,45 +63,21 @@
                 <th>URL</th>
                 <th>Date</th>
                 <th>Status</th>
+                <th>Details</th>
             </tr>
         </thead>
         <tbody>
             <!-- Dynamic rows go here -->
         </tbody>
     </table>
-<!-- Popup Modal -->
-    <div id="popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); color: #fff;">
-    <div id="popupContent" style="margin: 15% auto; padding: 20px; background: #333; border-radius: 10px; width: 80%; max-width: 600px;">
-        <span id="closePopup" style="float: right; cursor: pointer; font-size: 20px;">&times;</span>
-        <h2>Scraped Data</h2>
-        <div id="scrapedData"></div>
-    </div>
-    </div>
-<script>
-        async function fetchHistory() {
-            try {
-                const response = await fetch('/api/history');
-                const data = await response.json();
-                const tableBody = document.querySelector('#historyTable tbody');
-                tableBody.innerHTML = ''; // Clear existing rows
 
-                data.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${row.id}</td>
-                        <td>${row.url}</td>
-                        <td>${row.date}</td>
-                        <td>${row.status}</td>
-                    `;
-                    tableBody.appendChild(tr);
-                });
-            } catch (error) {
-                console.error('Error fetching history:', error);
-            }
-        }
-
-        // Fetch and display history when the page loads
-        window.onload = fetchHistory;
-    </script>
+    <!-- Popup Modal -->
+    <div id="popup">
+        <div id="popupContent">
+            <span id="closePopup">&times;</span>
+            <h2>Scraped Data</h2>
+            <div id="scrapedData"></div>
+        </div>
+    </div>
 </body>
 </html>
