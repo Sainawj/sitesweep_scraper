@@ -52,44 +52,54 @@ def scrape():
 
         # Return the scraped data to the front-end
         return jsonify({
-            "message": "Scraping successful!", 
-            "data": scraped_data
-        }), 200
-    except Exception as e:
-        return jsonify({"message": f"Error: {str(e)}"}), 500
+            "message": "Scraping successful!",
+            "data": {
+                "title": title,
+                "description": description,
+                "emails": scraped_data.get('emails', []),
+                "phones": scraped_data.get('phones', []),
+                "addresses": scraped_data.get('addresses', [])
+            }
+        })
 
-# API endpoint to retrieve the scraping history
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"message": "An error occurred"}), 500
+
+# API endpoint to fetch scraping history
 @main.route('/api/history', methods=['GET'])
 def get_history():
     try:
-        # Query the latest 10 records from the ScrapingHistory model
-        history_records = ScrapingHistory.query.order_by(ScrapingHistory.date.desc()).limit(10).all()
-        history_list = [
-            {
-                "id": record.id,
-                "url": record.url,
-                "date": record.date,
-                "status": record.status
-            }
-            for record in history_records
-        ]
-        return jsonify(history_list), 200
-    except Exception as e:
-        return jsonify({"message": f"Error fetching history: {str(e)}"}), 500
+        # Fetch scraping history from the database
+        history_records = ScrapingHistory.query.order_by(ScrapingHistory.date.desc()).all()
+        history_list = [{
+            "id": record.id,
+            "url": record.url,
+            "date": record.date,
+            "status": record.status
+        } for record in history_records]
 
-# API endpoint to retrieve scraped data for a specific history entry
+        return jsonify(history_list)
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"message": "An error occurred"}), 500
+
+# API endpoint to fetch scraped data by ID
 @main.route('/api/scraped_data/<int:id>', methods=['GET'])
 def get_scraped_data(id):
     try:
-        # Query the ScrapingHistory model for the specific ID
-        record = ScrapingHistory.query.get_or_404(id)
-        scraped_data = {
+        # Fetch the scraped data by ID from the database
+        record = ScrapingHistory.query.get(id)
+        if not record:
+            return jsonify({"message": "Record not found"}), 404
+
+        return jsonify({
             "title": record.title,
             "description": record.description,
-            "emails": record.emails,
-            "phones": record.phones,
-            "addresses": record.addresses
-        }
-        return jsonify(scraped_data), 200
+            "emails": record.emails.split(', ') if record.emails else [],
+            "phones": record.phones.split(', ') if record.phones else [],
+            "addresses": record.addresses.split(', ') if record.addresses else []
+        })
     except Exception as e:
-        return jsonify({"message": f"Error fetching scraped data: {str(e)}"}), 500
+        print(f"Error: {e}")
+        return jsonify({"message": "An error occurred"}), 500
