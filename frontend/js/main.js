@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${record.url}</td>
                         <td>${new Date(record.date).toLocaleString()}</td>
                         <td>${record.status}</td>
-                        <td><button onclick="fetchScrapedData(${record.id})">Details</button></td>
+                        <td><a href="#" onclick="fetchScrapedData(${record.id}); return false;">View Details</a></td>
                     `;
                     historyTableBody.appendChild(row);
                 });
