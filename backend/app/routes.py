@@ -26,12 +26,15 @@ def scrape():
         # Call the scraper function to get the metadata and contact info
         scraped_data = scrape_data(url)
 
+        if "error" in scraped_data:
+            return jsonify({"message": "Scraping failed"}), 500
+
         # Extract metadata from the scraped data
-        title = scraped_data.get('title', '')
-        description = scraped_data.get('description', '')
-        emails = ', '.join(scraped_data.get('emails', []))
-        phones = ', '.join(scraped_data.get('phones', []))
-        addresses = ', '.join(scraped_data.get('addresses', []))
+        title = scraped_data.get('title', 'No title found')
+        description = scraped_data.get('description', 'No description found')
+        emails = ', '.join(scraped_data.get('emails', [])) or "No emails found"
+        phones = ', '.join(scraped_data.get('phones', [])) or "No phone numbers found"
+        addresses = ', '.join(scraped_data.get('addresses', [])) or "No addresses found"
 
         # Create a new entry in the database with metadata and contact info
         new_entry = ScrapingHistory(
