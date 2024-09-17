@@ -136,7 +136,8 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user)
             flash('Login successful', 'success')
-            return redirect(url_for('main.index'))
+            next_page = request.args.get('next') or url_for('main.index')
+            return redirect(next_page)
         else:
             flash('Login unsuccessful. Check your credentials.', 'danger')
     return render_template('login.html', form=form)
