@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultPhones = document.getElementById('resultPhones');
     const resultAddresses = document.getElementById('resultAddresses');
     const historyTableBody = document.querySelector('#historyTable tbody');
+    const detailsButtons = document.querySelectorAll('.details-btn');
 
     // Handle scraping form submission
     scrapeForm.addEventListener('submit', function(event) {
@@ -58,6 +59,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('popup').style.display = 'none';
     });
 
+    detailsButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const id = this.getAttribute('data-id');
+            // Fetch and display data based on `id`
+            // Implement your AJAX or fetch request here
+        });
+    });
+    
     // Fetch and populate scraping history
     function fetchHistory() {
         fetch('/api/history')
