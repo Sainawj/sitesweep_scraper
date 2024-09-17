@@ -10,7 +10,7 @@ load_dotenv()
 
 db = SQLAlchemy()
 migrate = Migrate()
-login_manager = LoginManager()  # Initialize LoginManager
+login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__, static_folder='../../frontend', template_folder='../../frontend')
@@ -22,7 +22,7 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
-    login_manager.init_app(app)  # Initialize LoginManager with app
+    login_manager.init_app(app)
 
     # Tell Flask-Login what view to redirect unauthorized users to
     login_manager.login_view = 'main.login'
