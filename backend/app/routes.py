@@ -53,7 +53,8 @@ def scrape():
             phones=phones,
             addresses=addresses,
             data=str(scraped_data),  # Save the full scraped data (if needed) as a string
-            status="Completed"
+            status="Completed",
+            user_id=current_user.id  # Associate this scraping with the logged-in user
         )
         db.session.add(new_entry)
         db.session.commit()
@@ -79,8 +80,8 @@ def scrape():
 @login_required
 def get_history():
     try:
-        # Fetch scraping history from the database
-        history_records = ScrapingHistory.query.order_by(ScrapingHistory.date.desc()).all()
+        # Fetch scraping history for the current user
+        history_records = ScrapingHistory.query.filter_by(user_id=current_user.id).order_by(ScrapingHistory.date.desc()).all()
         history_list = [{
             "id": record.id,
             "url": record.url,
@@ -99,7 +100,7 @@ def get_history():
 def get_scraped_data(id):
     try:
         # Fetch the scraped data by ID from the database
-        record = ScrapingHistory.query.get(id)
+        record = ScrapingHistory.query.filter_by(id=id, user_id=current_user.id).first()
         if not record:
             return jsonify({"message": "Record not found"}), 404
 
