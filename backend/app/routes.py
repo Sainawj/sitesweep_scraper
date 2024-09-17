@@ -139,7 +139,7 @@ def login():
             return redirect(url_for('main.index'))
         else:
             flash('Login unsuccessful. Check your credentials.', 'danger')
-    return render_template('index.html', form=form)
+    return render_template('login.html', form=form)
 
 # Route for logout (Requires login)
 @main.route('/logout')
