@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 main = Blueprint('main', __name__)
 
 # Serve the homepage
-@app.route('/')
+@main.route('/')
 @login_required
 def index():
     # Fetch scraping history for the current user
