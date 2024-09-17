@@ -16,6 +16,8 @@ class ScrapingHistory(db.Model):
     emails = db.Column(db.Text)
     phones = db.Column(db.Text)
     addresses = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Add this line
+    user = db.relationship('User', backref=db.backref('scraping_histories', lazy=True))  # Add this line
 
     def __repr__(self):
         return f'<ScrapingHistory {self.url}>'
