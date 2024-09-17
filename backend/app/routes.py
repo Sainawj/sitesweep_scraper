@@ -118,7 +118,7 @@ def register():
     form = SignupForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        new_user = User(username=form.username.data, email=form.email.data, password_hash=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         flash('Account created successfully! You can now log in.', 'success')
@@ -132,7 +132,7 @@ def login():
     if form.validate_on_submit():
         # Fetch user by email
         user = User.query.filter_by(email=form.email.data).first()
-        if user and check_password_hash(user.password, form.password.data):
+        if user and user.check_password(form.password.data):
             login_user(user)
             flash('Login successful', 'success')
             return redirect(url_for('main.index'))
