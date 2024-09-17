@@ -16,9 +16,9 @@
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                        <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
                     {% else %}
-                        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                        <li><a href="{{ url_for('main.login') }}">Login</a></li>
                     {% endif %}
                 </ul>
             </nav>
@@ -73,7 +73,7 @@
 
     <footer id="contact" class="footer">
         <h2>Contact Me</h2>
-        <p>Feel free to reach out via email: <a href="mailto:jonathansaina@gmail.com">jonathansaina@gmail.com</a></p>
+        <p>Feel free to reach out via email: <a href="mailto:jonathansaina@gmail.com">sainajonathan@gmail.com</a></p>
     </footer>
 
     <!-- Popup Modal -->
