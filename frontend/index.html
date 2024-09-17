@@ -54,21 +54,32 @@
     </section>
 
     <section id="history" class="section-padding">
-        <h2>Scraping History</h2>
-        <table id="historyTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>URL</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Dynamic rows go here -->
-            </tbody>
-        </table>
+    <h2>Scraping History</h2>
+    <table id="historyTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>URL</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in history %}
+            <tr>
+                <td>{{ record.id }}</td>
+                <td>{{ record.url }}</td>
+                <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ record.status }}</td>
+                <td>
+                    <!-- Optionally, include a link or button to view more details -->
+                    <a href="#" class="view-details" data-id="{{ record.id }}">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     </section>
 
     <footer id="contact" class="footer">
