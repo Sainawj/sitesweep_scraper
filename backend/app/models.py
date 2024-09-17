@@ -1,6 +1,6 @@
 from datetime import datetime
 from . import db
-from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 class ScrapingHistory(db.Model):
     __tablename__ = 'scraping_history'
@@ -18,3 +18,14 @@ class ScrapingHistory(db.Model):
 
     def __repr__(self):
         return f'<ScrapingHistory {self.url}>'
+
+class User(db.Model, UserMixin):
+    __tablename__ = 'users'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<User {self.email}>'
