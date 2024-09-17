@@ -3,14 +3,15 @@ from .scraper import scrape_data
 from flask_login import login_required, current_user, login_user, logout_user
 from .models import ScrapingHistory, User
 from . import db
-from .forms import LoginForm
-from werkzeug.security import check_password_hash
+from .forms import LoginForm, SignupForm
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Define a Blueprint for routes
 main = Blueprint('main', __name__)
 
 # Serve the homepage
 @main.route('/')
+@login_required
 def index():
     return render_template('index.html')  # Renders the index.html from frontend
 
@@ -111,6 +112,19 @@ def get_scraped_data(id):
         print(f"Error: {e}")
         return jsonify({"message": "An error occurred"}), 500
 
+# Route for user registration
+@main.route('/register', methods=['GET', 'POST'])
+def register():
+    form = SignupForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Account created successfully! You can now log in.', 'success')
+        return redirect(url_for('main.login'))
+    return render_template('register.html', form=form)
+
 # Route for login
 @main.route('/login', methods=['GET', 'POST'])
 def login():
@@ -133,4 +147,3 @@ def logout():
     logout_user()
     flash('You have been logged out', 'info')
     return redirect(url_for('main.index'))
-
