@@ -10,10 +10,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 main = Blueprint('main', __name__)
 
 # Serve the homepage
-@main.route('/')
+@app.route('/')
 @login_required
 def index():
-    return render_template('index.html')  # Renders the index.html from frontend
+    # Fetch scraping history for the current user
+    history = ScrapingHistory.query.filter_by(user_id=current_user.id).all()
+    return render_template('index.html', history=history)
 
 # Serve the history page (Requires login)
 @main.route('/history')
