@@ -5,7 +5,6 @@ from .models import ScrapingHistory, User
 from . import db
 from .forms import LoginForm, SignupForm
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import flash, redirect, url_for
 
 # Define a Blueprint for routes
 main = Blueprint('main', __name__)
@@ -141,14 +140,6 @@ def login():
         else:
             flash('Login unsuccessful. Check your credentials.', 'danger')
     return render_template('login.html', form=form)
-
-# Inside your login route
-if user and user.check_password(form.password.data):
-    login_user(user)
-    flash('Login successful', 'success')
-    return redirect(url_for('main.index'))
-else:
-    flash('Login unsuccessful. Check your credentials.', 'error')
 
 # Route for logout (Requires login)
 @main.route('/logout')
