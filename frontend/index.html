@@ -9,7 +9,49 @@
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 <body>
-    <!-- Other content -->
+    <header>
+        <div class="cover-image">
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="title-overlay">
+                <h1>Sitesweep: Web Scraping Tool</h1>
+                <p>Scrape and Manage Data Efficiently</p>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="section-padding">
+        <h2>About Sitesweep</h2>
+        <p>Sitesweep is a tool designed to scrape and manage data from various sources. With a user-friendly interface and powerful backend, it allows you to extract metadata, contact information, and more from web pages.</p>
+    </section>
+
+    <section id="scraping" class="section-padding">
+        <h2>Scrape Data</h2>
+        <!-- Form to input the URL -->
+        <form id="scrapeForm">
+            <label for="url">Enter URL to Scrape:</label>
+            <input type="text" id="url" name="url" placeholder="https://example.com" required>
+            <button type="submit">Scrape</button>
+        </form>
+
+        <h2>Scraped Data</h2>
+        <div id="scrapedResults">
+            <p><strong>Title:</strong> <span id="resultTitle">N/A</span></p>
+            <p><strong>Description:</strong> <span id="resultDescription">N/A</span></p>
+            <p><strong>Emails:</strong> <span id="resultEmails">N/A</span></p>
+            <p><strong>Phones:</strong> <span id="resultPhones">N/A</span></p>
+            <p><strong>Addresses:</strong> <span id="resultAddresses">N/A</span></p>
+        </div>
+    </section>
 
     <section id="history" class="section-padding">
         <h2>Scraping History</h2>
@@ -24,22 +66,23 @@
                 </tr>
             </thead>
             <tbody>
-                {% for record in history %}
-                <tr>
-                    <td>{{ record.id }}</td>
-                    <td>{{ record.url }}</td>
-                    <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                    <td>{{ record.status }}</td>
-                    <td>
-                        <!-- Details could be links to more info or popups -->
-                        <a href="#" data-id="{{ record.id }}" class="details-btn">View</a>
-                    </td>
-                </tr>
-                {% endfor %}
+                <!-- Dynamic rows go here -->
             </tbody>
         </table>
     </section>
 
-    <!-- Other content -->
+    <footer id="contact" class="footer">
+        <h2>Contact Me</h2>
+        <p>Feel free to reach out via email: <a href="mailto:jonathansaina@gmail.com">jonathansaina@gmail.com</a></p>
+    </footer>
+
+    <!-- Popup Modal -->
+    <div id="popup" style="display: none;">
+        <div id="popupContent">
+            <span id="closePopup">&times;</span>
+            <h2>Scraped Data</h2>
+            <div id="scrapedData"></div>
+        </div>
+    </div>
 </body>
 </html>
