@@ -125,6 +125,8 @@ def register():
         db.session.commit()
         flash('Account created successfully! You can now log in.', 'success')
         return redirect(url_for('main.login'))
+    else:
+        flash('Sign up failed. Please check your input.', 'danger')
     return render_template('signup.html', form=form)
 
 # Route for login
