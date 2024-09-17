@@ -19,23 +19,18 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    # Set the secret key for session management
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', '4871b4b9cd4a257721a09f44ecca7866c60479a5bd184ef699249b2e56de32b3')
+
     db.init_app(app)
     migrate.init_app(app, db)
     
     # Initialize the login manager
     login_manager.init_app(app)
-    
-    # Set the login view (redirect users to this endpoint if login is required)
-    login_manager.login_view = 'auth.login'  # Make sure 'auth.login' matches the route in your application
+    login_manager.login_view = 'auth.login'  # Adjust to your actual login route
 
     # Import and register the Blueprint
     from .routes import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
     return app
-
-# Define the user_loader callback
-from .models import User  # Import User model (adjust path if necessary)
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))  # Adjust this based on your user model
