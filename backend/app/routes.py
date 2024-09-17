@@ -1,7 +1,10 @@
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash
 from .scraper import scrape_data
-from .models import ScrapingHistory
+from flask_login import login_required, current_user, login_user, logout_user
+from .models import ScrapingHistory, User
 from . import db
+from .forms import LoginForm
+from werkzeug.security import check_password_hash
 
 # Define a Blueprint for routes
 main = Blueprint('main', __name__)
@@ -11,13 +14,15 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('index.html')  # Renders the index.html from frontend
 
-# Serve the history page
+# Serve the history page (Requires login)
 @main.route('/history')
+@login_required
 def history():
     return render_template('history.html')  # Renders history.html from frontend
 
-# API endpoint to trigger the scraping process
+# API endpoint to trigger the scraping process (Requires login)
 @main.route('/api/scrape', methods=['POST'])
+@login_required
 def scrape():
     url = request.form.get('url')
     if not url:
@@ -66,8 +71,9 @@ def scrape():
         print(f"Error: {e}")
         return jsonify({"message": "An error occurred"}), 500
 
-# API endpoint to fetch scraping history
+# API endpoint to fetch scraping history (Requires login)
 @main.route('/api/history', methods=['GET'])
+@login_required
 def get_history():
     try:
         # Fetch scraping history from the database
@@ -84,8 +90,9 @@ def get_history():
         print(f"Error: {e}")
         return jsonify({"message": "An error occurred"}), 500
 
-# API endpoint to fetch scraped data by ID
+# API endpoint to fetch scraped data by ID (Requires login)
 @main.route('/api/scraped_data/<int:id>', methods=['GET'])
+@login_required
 def get_scraped_data(id):
     try:
         # Fetch the scraped data by ID from the database
@@ -103,3 +110,27 @@ def get_scraped_data(id):
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"message": "An error occurred"}), 500
+
+# Route for login
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        # Fetch user by email
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and check_password_hash(user.password, form.password.data):
+            login_user(user)
+            flash('Login successful', 'success')
+            return redirect(url_for('main.index'))
+        else:
+            flash('Login unsuccessful. Check your credentials.', 'danger')
+    return render_template('login.html', form=form)
+
+# Route for logout (Requires login)
+@main.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out', 'info')
+    return redirect(url_for('main.index'))
+
