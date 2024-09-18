@@ -75,7 +75,7 @@
                         <th>URL</th>
                         <th>Date</th>
                         <th>Status</th>
-                        <th>Actions</th> <!-- Changed the heading to "Actions" to group the buttons -->
+                        <th>Details</th>
                     </tr>
                 </thead>
                 <button id="exportCsv">Export History to CSV</button>
@@ -87,9 +87,13 @@
                         <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                         <td>{{ record.status }}</td>
                         <td>
-                            <a href="#" class="view-details btn btn-info btn-sm" data-id="{{ record.id }}">View Details</a>
-                            <a href="#" class="edit-record btn btn-warning btn-sm" data-id="{{ record.id }}">Edit</a>
-                            <a href="#" class="delete-record btn btn-danger btn-sm" data-id="{{ record.id }}">Delete</a>
+                            <a href="#" class="view-details" data-id="{{ record.id }}">View Details</a>
+                        </td>
+                        <td>
+                            <a href="#" class="edit-record" data-id="{{ record.id }}">Edit</a>
+                        </td>
+                        <td>
+                            <a href="#" class="delete-record" data-id="{{ record.id }}">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -127,84 +131,91 @@
 
     <!-- Script for handling form submission and AJAX requests -->
     <script>
-        // Handle form submission for scraping
-        $('#scrapeForm').on('submit', function (event) {
-            event.preventDefault();
-            const url = $('#url').val();
+        $(document).ready(function () {
+            // Ensure all buttons are visible when the page loads
+            $('.view-details').show();
+            $('.edit-record').show();
+            $('.delete-record').show();
 
-            if (url) {
-                $.ajax({
-                    url: "{{ url_for('main.scrape') }}",
-                    type: "POST",
-                    data: { "url": url },
-                    success: function (response) {
-                        $('#resultTitle').text(response.data.title || 'N/A');
-                        $('#resultDescription').text(response.data.description || 'N/A');
-                        $('#resultEmails').text(response.data.emails.join(', ') || 'N/A');
-                        $('#resultPhones').text(response.data.phones.join(', ') || 'N/A');
-                        $('#resultAddresses').text(response.data.addresses.join(', ') || 'N/A');
-                    },
-                    error: function () {
-                        alert("Error scraping the data. Please try again.");
-                    }
-                });
-            } else {
-                alert("Please enter a URL.");
-            }
-        });
+            // Handle form submission for scraping
+            $('#scrapeForm').on('submit', function (event) {
+                event.preventDefault();
+                const url = $('#url').val();
 
-        // Handle view details click
-        $('.view-details').on('click', function (event) {
-            event.preventDefault();
-            const recordId = $(this).data('id');
-
-            $.ajax({
-                url: `/api/scraped_data/${recordId}`,
-                type: "GET",
-                success: function (response) {
-                    $('#scrapedData').html(`
-                        <p><strong>Title:</strong> ${response.title}</p>
-                        <p><strong>Description:</strong> ${response.description}</p>
-                        <p><strong>Emails:</strong> ${response.emails.join(', ')}</p>
-                        <p><strong>Phones:</strong> ${response.phones.join(', ')}</p>
-                        <p><strong>Addresses:</strong> ${response.addresses.join(', ')}</p>
-                    `);
-                    $('#popup').show();
-                },
-                error: function () {
-                    alert("Failed to load details.");
+                if (url) {
+                    $.ajax({
+                        url: "{{ url_for('main.scrape') }}",
+                        type: "POST",
+                        data: { "url": url },
+                        success: function (response) {
+                            $('#resultTitle').text(response.data.title || 'N/A');
+                            $('#resultDescription').text(response.data.description || 'N/A');
+                            $('#resultEmails').text(response.data.emails.join(', ') || 'N/A');
+                            $('#resultPhones').text(response.data.phones.join(', ') || 'N/A');
+                            $('#resultAddresses').text(response.data.addresses.join(', ') || 'N/A');
+                        },
+                        error: function () {
+                            alert("Error scraping the data. Please try again.");
+                        }
+                    });
+                } else {
+                    alert("Please enter a URL.");
                 }
             });
-        });
 
-        // Close the modal
-        $('#closePopup').on('click', function () {
-            $('#popup').hide();
-        });
+            // Handle view details click
+            $('.view-details').on('click', function (event) {
+                event.preventDefault();
+                const recordId = $(this).data('id');
 
-        // Handle delete record
-        $('.delete-record').on('click', function (event) {
-            event.preventDefault();
-            const recordId = $(this).data('id');
-
-            if (confirm("Are you sure you want to delete this record?")) {
                 $.ajax({
-                    url: `/api/delete_record/${recordId}`,
-                    type: "DELETE",
+                    url: `/api/scraped_data/${recordId}`,
+                    type: "GET",
                     success: function (response) {
-                        alert(response.message);
-                        location.reload();
+                        $('#scrapedData').html(`
+                            <p><strong>Title:</strong> ${response.title}</p>
+                            <p><strong>Description:</strong> ${response.description}</p>
+                            <p><strong>Emails:</strong> ${response.emails.join(', ')}</p>
+                            <p><strong>Phones:</strong> ${response.phones.join(', ')}</p>
+                            <p><strong>Addresses:</strong> ${response.addresses.join(', ')}</p>
+                        `);
+                        $('#popup').show();
                     },
                     error: function () {
-                        alert("Failed to delete the record.");
+                        alert("Failed to load details.");
                     }
                 });
-            }
-        });
+            });
 
-        // Handle export to CSV
-        $('#exportCsv').on('click', function () {
-            window.location.href = '/api/export_csv';
+            // Handle delete record
+            $('.delete-record').on('click', function (event) {
+                event.preventDefault();
+                const recordId = $(this).data('id');
+
+                if (confirm("Are you sure you want to delete this record?")) {
+                    $.ajax({
+                        url: `/api/delete_record/${recordId}`,
+                        type: "DELETE",
+                        success: function (response) {
+                            alert(response.message);
+                            location.reload();
+                        },
+                        error: function () {
+                            alert("Failed to delete the record.");
+                        }
+                    });
+                }
+            });
+
+            // Close the modal
+            $('#closePopup').on('click', function () {
+                $('#popup').hide();
+            });
+
+            // Export to CSV
+            $('#exportCsv').on('click', function () {
+                window.location.href = '/api/export_csv';
+            });
         });
     </script>
 </body>
