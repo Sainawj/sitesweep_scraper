@@ -81,20 +81,14 @@
                 <button id="exportCsv">Export History to CSV</button>
                 <tbody>
                     {% for record in history %}
-                    <tr>
+                     <tr>
                         <td>{{ record.id }}</td>
                         <td>{{ record.url }}</td>
                         <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                         <td>{{ record.status }}</td>
-                        <td>
-                            <a href="#" class="view-details" data-id="{{ record.id }}">View Details</a>
-                        </td>
-                        <td>
-                            <a href="#" class="edit-record" data-id="{{ record.id }}">Edit</a>
-                        </td>
-                        <td>
-                            <a href="#" class="delete-record" data-id="{{ record.id }}">Delete</a>
-                        </td>
+                        <td><a href="#" class="view-details" data-id="{{ record.id }}">View Details</a></td>
+                        <td><a href="#" class="edit-record" data-id="{{ record.id }}">Edit</a></td>
+                        <td><a href="#" class="delete-record" data-id="{{ record.id }}">Delete</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -216,6 +210,16 @@
             $('#exportCsv').on('click', function () {
                 window.location.href = '/api/export_csv';
             });
+        });
+
+        $(document).ready(function () {
+        // Debugging
+        console.log($('.edit-record').length); // Check if elements are found
+        console.log($('.delete-record').length); // Check if elements are found
+
+        $('.view-details').show();
+        $('.edit-record').show();
+        $('.delete-record').show();
         });
     </script>
 </body>
