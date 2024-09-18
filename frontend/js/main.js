@@ -91,12 +91,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Attach event listeners for edit and delete buttons
                 document.querySelectorAll('.editButton').forEach(button => {
-                    button.addEventListener('click', function() {
+                    button.addEventListener('click', async function() {
                         const id = this.dataset.id;
-                        // Handle edit logic here (could be a separate function)
-                    });
-                });
-
+                        try {
+                            const response = await fetch(`/api/record/${id}`);
+                            const data = await response.json();
+                                if (response.ok) {
+                                // Assuming you have an edit form with input fields for the record
+                                document.getElementById('editRecordId').value = data.id;
+                                document.getElementById('editUrl').value = data.url;
+                                document.getElementById('editDate').value = new Date(data.date).toLocaleDateString();
+                                document.getElementById('editStatus').value = data.status;
+                                document.getElementById('editModal').style.display = 'block';  // Show the edit modal
+                                } else {
+                                alert(data.message);
+                                            }
+                                    } catch (error) {
+                                console.error('Error fetching record data:', error);
+                                            }
+                                        });
+                                });
+                    // Handle Edit Form Submission
+const editForm = document.getElementById('editForm');
+if (editForm) {
+    editForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const formData = new FormData(editForm);
+        try {
+            const response = await fetch('/api/update_record', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert('Record updated successfully!');
+                document.getElementById('editModal').style.display = 'none';  // Hide the edit modal
+                fetchHistory();  // Refresh the history table
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('Error updating record:', error);
+        }
+    });
+}
+                
                 document.querySelectorAll('.deleteButton').forEach(button => {
                     button.addEventListener('click', async function() {
                         const id = this.dataset.id;
