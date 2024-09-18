@@ -20,7 +20,7 @@
             <li><a href="#about">About Sitesweep</a></li>
             <li><a href="#contact">Contact us</a></li>
             {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+            <li><a href="#" id="logoutButton">Logout</a></li>
             <li><a href="{{ url_for('main.history') }}">History</a></li>
             {% else %}
             <li><a href="{{ url_for('main.login') }}">Login</a></li>
@@ -32,7 +32,7 @@
     <div id="content">
         <!-- Navbar and search form -->
         <nav class="navbar navbar-light bg-light">
-            <form id="scrapeForm" class="form-inline" method="POST" action="{{ url_for('main.scrape') }}">
+            <form id="scrapeForm" class="form-inline">
                 <label for="url">Sweep!!:</label>
                 <input class="form-control mr-sm-2" type="text" placeholder="Enter URL to scrape" aria-label="Search"
                     id="url" name="url" required>
@@ -82,17 +82,7 @@
                 </thead>
                 <button id="exportCsv">Export History to CSV</button>
                 <tbody>
-                    {% for record in history %}
-                    <tr>
-                        <td>{{ record.id }}</td>
-                        <td>{{ record.url }}</td>
-                        <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                        <td>{{ record.status }}</td>
-                        <td><a href="#" class="view-details" data-id="{{ record.id }}">View Details</a></td>
-                        <td><a href="#" class="edit-record" data-id="{{ record.id }}">Edit</a></td>
-                        <td><a href="#" class="delete-record" data-id="{{ record.id }}">Delete</a></td>
-                    </tr>
-                    {% endfor %}
+                    <!-- Data will be dynamically inserted by JavaScript -->
                 </tbody>
             </table>
         </section>
@@ -115,7 +105,7 @@
     <!-- Update Record Form (Hidden by default) -->
     <div id="editForm" style="display: none;">
         <h3>Edit Record</h3>
-        <form id="updateRecordForm" method="POST">
+        <form id="updateRecordForm">
             <label>Title: <input type="text" id="editTitle" name="title"></label><br>
             <label>Description: <input type="text" id="editDescription" name="description"></label><br>
             <label>Emails: <input type="text" id="editEmails" name="emails"></label><br>
@@ -125,7 +115,7 @@
         </form>
     </div>
 
-    <!-- Script for handling form submission and AJAX requests -->
+    <!-- JavaScript file -->
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>
 
