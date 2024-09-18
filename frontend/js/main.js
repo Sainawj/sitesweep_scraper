@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function(event) {
             event.preventDefault();
             const id = this.getAttribute('data-id');
+            // Fetch and display data based on `id`
             fetch(`/api/scraped_data/${id}`)
                 .then(response => response.json())
                 .then(data => openPopup(data))
@@ -70,53 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle edit record click
-    document.querySelectorAll('.edit-record').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-            const id = this.getAttribute('data-id');
-
-            fetch(`/api/scraped_data/${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('editTitle').value = data.title || "";
-                    document.getElementById('editDescription').value = data.description || "";
-                    document.getElementById('editEmails').value = data.emails.join(', ') || "";
-                    document.getElementById('editPhones').value = data.phones.join(', ') || "";
-                    document.getElementById('editAddresses').value = data.addresses.join(', ') || "";
-
-                    document.getElementById('editForm').style.display = 'block';
-
-                    document.getElementById('updateRecordForm').onsubmit = function(e) {
-                        e.preventDefault();
-                        const updatedData = {
-                            title: document.getElementById('editTitle').value,
-                            description: document.getElementById('editDescription').value,
-                            emails: document.getElementById('editEmails').value.split(',').map(e => e.trim()),
-                            phones: document.getElementById('editPhones').value.split(',').map(p => p.trim()),
-                            addresses: document.getElementById('editAddresses').value.split(',').map(a => a.trim())
-                        };
-
-                        fetch(`/api/update_record/${id}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(updatedData)
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            alert(data.message);
-                            location.reload();  // Reload the page to reflect changes
-                        })
-                        .catch(error => console.error('Error updating record:', error));
-                    };
-                })
-                .catch(error => console.error('Error fetching record for edit:', error));
-        });
-    });
-
-    // Handle delete record click
+    // Handle delete record
     document.querySelectorAll('.delete-record').forEach(button => {
         button.addEventListener('click', function(event) {
             event.preventDefault();
@@ -127,20 +82,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     .then(response => response.json())
                     .then(data => {
                         alert(data.message);
-                        location.reload();  // Reload the page to reflect changes
+                        location.reload();
                     })
                     .catch(error => alert("Failed to delete the record."));
             }
         });
     });
 
-    // Fetch history function
+    // Export to CSV
+    document.getElementById('exportCsv').addEventListener('click', function() {
+        window.location.href = '/api/export_csv';
+    });
+
+    // Fetch and populate scraping history
     function fetchHistory() {
         fetch('/api/history')
             .then(response => response.json())
             .then(data => {
+                // Clear the table body
                 historyTableBody.innerHTML = '';
-                data.history.forEach(record => {
+                // Populate table rows with history records
+                data.slice(0, 10).forEach(record => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${record.id}</td>
@@ -154,9 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     historyTableBody.appendChild(row);
                 });
             })
-            .catch(error => console.error('Error fetching history:', error));
+            .catch(error => console.error("Error fetching history:", error));
     }
 
-    // Call fetchHistory to populate the table initially
+    // Fetch history on page load
     fetchHistory();
 });
