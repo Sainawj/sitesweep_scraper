@@ -1,103 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sitesweep: Know page contents on click!">
     <title>Sitesweep</title>
+    <!-- Link to external CSS for styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
+
 <body>
-    <header>
-        <div class="cover-image">
-            <nav>
-                <ul>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
-                    {% else %}
-                        <li><a href="{{ url_for('main.login') }}">Login</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-            <div class="title-overlay">
-                <h1>Sitesweep: Web Scraping Tool</h1>
-                <p>Scrape and Manage Data Efficiently</p>
-            </div>
-        </div>
-    </header>
+    <!-- Sidebar for navigation -->
+    <div id="sidebar" class="d-inline-block position-fixed">
+        <ul>
+            <li><a href="#about">About Sitesweep</a></li>
+            <li><a href="#contact">Contact us</a></li>
+            {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+            {% else %}
+            <li><a href="{{ url_for('main.login') }}">Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
 
-    <section id="about" class="section-padding">
-        <h2>About Sitesweep</h2>
-        <p>Sitesweep is a tool designed to scrape and manage data from various sources. With a user-friendly interface and powerful backend, it allows you to extract metadata, contact information, and more from web pages.</p>
-    </section>
+    <!-- Main Content Section -->
+    <div id="content">
+        <!-- Navbar and search form -->
+        <nav class="navbar navbar-light bg-light">
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="Enter URL to scrape" aria-label="Search"
+                    id="url">
+                <button class="btn btn-primary my-2 my-sm-0" type="submit" id="scrapeBtn">Scrape</button>
+            </form>
+        </nav>
 
-    <section id="scraping" class="section-padding">
-    <h2>Scrape Data</h2>
-    <!-- Form to input the URL -->
-    <form id="scrapeForm">
-        <label for="url">Enter URL to Scrape:</label>
-        <input type="text" id="url" name="url" placeholder="https://example.com" required>
-        <button type="submit">Scrape</button>
-    </form>
+        <!-- Scraped Data Section -->
+        <section id="scraping" class="section-padding">
+            <h2>Scraped Data</h2>
+            <table id="scrapedResults" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Emails</th>
+                        <th>Phones</th>
+                        <th>Addresses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="resultTitle">N/A</td>
+                        <td id="resultDescription">N/A</td>
+                        <td id="resultEmails">N/A</td>
+                        <td id="resultPhones">N/A</td>
+                        <td id="resultAddresses">N/A</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
 
-    <h2>Scraped Data</h2>
-    <table id="scrapedResults">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Emails</th>
-                <th>Phones</th>
-                <th>Addresses</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td id="resultTitle">N/A</td>
-                <td id="resultDescription">N/A</td>
-                <td id="resultEmails">N/A</td>
-                <td id="resultPhones">N/A</td>
-                <td id="resultAddresses">N/A</td>
-            </tr>
-        </tbody>
-    </table>
-</section>
+        <!-- Scraping History Section -->
+        <section id="history" class="section-padding">
+            <h2>Scraping History</h2>
+            <table id="historyTable" class="table table-bordered scraping-history-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>URL</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in history %}
+                    <tr>
+                        <td>{{ record.id }}</td>
+                        <td>{{ record.url }}</td>
+                        <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>{{ record.status }}</td>
+                        <td>
+                            <!-- Optionally, include a link or button to view more details -->
+                            <a href="#" class="view-details" data-id="{{ record.id }}">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
 
-    <section id="history" class="section-padding">
-    <h2>Scraping History</h2>
-    <table id="historyTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>URL</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for record in history %}
-            <tr>
-                <td>{{ record.id }}</td>
-                <td>{{ record.url }}</td>
-                <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                <td>{{ record.status }}</td>
-                <td>
-                    <!-- Optionally, include a link or button to view more details -->
-                    <a href="#" class="view-details" data-id="{{ record.id }}">View</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    </section>
-
+    <!-- Footer -->
     <footer id="contact" class="footer">
-        <h2>Contact Me</h2>
-        <p>Feel free to reach out via email: <a href="mailto:jonathansaina@gmail.com">sainajonathan@gmail.com</a></p>
+        <p>Contact us: Feel free to reach out via email: <a href="mailto:jonathansaina@gmail.com">sainajonathan@gmail.com</a></p>
     </footer>
 
     <!-- Popup Modal -->
@@ -108,5 +105,18 @@
             <div id="scrapedData"></div>
         </div>
     </div>
+
+    <!-- Script for handling form submission -->
+    <script>
+        document.getElementById('scrapeBtn').addEventListener('click', function(event) {
+            event.preventDefault();
+            // Call the scraping API with the input URL
+            const url = document.getElementById('url').value;
+            if (url) {
+                // Make an API call to scrape the data here...
+            }
+        });
+    </script>
 </body>
+
 </html>
