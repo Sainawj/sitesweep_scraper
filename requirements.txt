@@ -1,13 +1,56 @@
-blinker==1.8.2
-click==8.1.7
-flask==2.3.3
+# Web framework for building web applications
+Flask==2.3.3
+
+# Extension for managing user sessions
+Flask-Login==0.6.2
+
+# Extension for SQLAlchemy integration with Flask
 Flask-SQLAlchemy==2.5.1
-greenlet==3.1.0
-importlib-metadata==8.5.0
-itsdangerous==2.2.0
-jinja2==3.1.4
-MarkupSafe==2.1.5
-SQLAlchemy==2.0.34
-typing-extensions==4.12.2
+
+# Extension for handling database migrations
+Flask-Migrate==4.0.4
+
+# Library for loading environment variables from a .env file
+python-dotenv==1.0.0
+
+# Library for parsing HTML and XML documents
+beautifulsoup4==4.12.2
+
+# HTTP library for making network requests
+requests==2.31.0
+
+# Data manipulation and analysis library; includes CSV file operations
+pandas==2.1.0
+
+# Signal handling for Flask
+blinker==1.8.2
+
+# Command-line interface library
+click==8.1.7
+
+# WSGI utilities and helpers for Flask
 werkzeug==3.0.4
+
+# SQL toolkit and Object-Relational Mapping (ORM) library
+SQLAlchemy==2.0.34
+
+# Provides enhanced metadata handling and utility functions
+importlib-metadata==8.5.0
+
+# Secure cookies and other Flask utilities
+itsdangerous==2.2.0
+
+# Templating engine used by Flask
+jinja2==3.1.4
+
+# Library for safe handling of strings in Jinja2
+MarkupSafe==2.1.5
+
+# Provides extended type hints for improved code clarity
+typing-extensions==4.12.2
+
+# Library for handling ZIP files and archives
 zipp==3.20.1
+
+# Greenlet library, which provides lightweight concurrency
+greenlet==3.1.0
