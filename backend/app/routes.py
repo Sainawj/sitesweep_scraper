@@ -153,10 +153,11 @@ def login():
     return render_template('login.html', form=form)
 
 # Route to update a scraping history record
-@main.route('/api/update_record/<int:id>', methods=['POST'])
+@main.route('/api/update_record', methods=['POST'])
 @login_required
-def update_record(id):
-    record = ScrapingHistory.query.filter_by(id=id, user_id=current_user.id).first()
+def update_record():
+    record_id = request.form.get('id')
+    record = ScrapingHistory.query.filter_by(id=record_id, user_id=current_user.id).first()
     if not record:
         return jsonify({"message": "Record not found"}), 404
 
@@ -210,7 +211,7 @@ def export_csv():
     output.headers["Content-Disposition"] = "attachment; filename=scraping_history.csv"
     output.headers["Content-type"] = "text/csv"
     return output
-    
+
 # Route for logout (Requires login)
 @main.route('/logout')
 @login_required
