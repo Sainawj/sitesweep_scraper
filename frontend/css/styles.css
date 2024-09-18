@@ -69,8 +69,44 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
-    max-width: 500px;
+    width: 100%;
+    max-width: 600px; /* Increased max-width */
+}
+
+/* Form Input and Textarea Styles */
+.modal-content input[type="text"], 
+.popup-content input[type="text"], 
+.modal-content textarea, 
+.popup-content textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+}
+
+/* Make textareas larger */
+.modal-content textarea, 
+.popup-content textarea {
+    height: 150px; /* Adjust height as needed */
+}
+
+/* Form Button Styles */
+.modal-content button, 
+.popup-content button {
+    background-color: #003366;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.modal-content button:hover, 
+.popup-content button:hover {
+    background-color: #1A5276;
 }
 
 /* Close Button */
