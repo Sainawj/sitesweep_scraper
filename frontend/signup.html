@@ -1,113 +1,80 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sitesweep: Know page contents on click!">
-    <title>Sitesweep - Signup</title>
+    <title>Login</title>
+    <!-- Link to external CSS for styles -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
-
 <body>
-    <!-- Sidebar for navigation -->
     <div id="sidebar" class="d-inline-block position-fixed">
         <ul>
             <li><a href="#about">About Sitesweep</a></li>
             <li><a href="#contact">Contact us</a></li>
             {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+            <li><a href="#" id="logoutButton">Logout</a></li>
             <li><a href="{{ url_for('main.history') }}">History</a></li>
             {% else %}
             <li><a href="{{ url_for('main.login') }}">Login</a></li>
-            <li><a href="{{ url_for('main.signup') }}">Signup</a></li>
             {% endif %}
         </ul>
     </div>
-
-    <!-- Main Content Section -->
     <div id="content">
-        <h1>Signup</h1>
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            <div>
-                {{ form.email.label }}<br>
-                {{ form.email(size=32) }}<br>
-                {% for error in form.email.errors %}
-                    <span>{{ error }}</span><br>
-                {% endfor %}
-            </div>
-            <div>
-                {{ form.password.label }}<br>
-                {{ form.password(size=32) }}<br>
-                {% for error in form.password.errors %}
-                    <span>{{ error }}</span><br>
-                {% endfor %}
-            </div>
-            <div>
-                {{ form.full_name.label }}<br>
-                {{ form.full_name(size=32) }}<br>
-                {% for error in form.full_name.errors %}
-                    <span>{{ error }}</span><br>
-                {% endfor %}
-            </div>
-            <div>
-                {{ form.location.label }}<br>
-                {{ form.location(size=32) }}<br>
-                {% for error in form.location.errors %}
-                    <span>{{ error }}</span><br>
-                {% endfor %}
-            </div>
-            <div>
-                {{ form.phone.label }}<br>
-                {{ form.phone(size=32) }}<br>
-                {% for error in form.phone.errors %}
-                    <span>{{ error }}</span><br>
-                {% endfor %}
-            </div>
-            <div>
-                {{ form.submit() }}
-            </div>
-        </form>
-        <p>Already have an account? <a href="{{ url_for('main.login') }}">Login here</a></p>
-    </div>
-
-    <!-- Footer -->
+       <h1>Sign Up</h1>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}<br>
+            {% for error in form.username.errors %}
+                <span>{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}<br>
+            {% for error in form.email.errors %}
+                <span>{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}<br>
+            {% for error in form.password.errors %}
+                <span>{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.confirm_password.label }}<br>
+            {{ form.confirm_password(size=32) }}<br>
+            {% for error in form.confirm_password.errors %}
+                <span>{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
+    <p>Already have an account? <a href="{{ url_for('main.login') }}">Log in here</a></p>
+</div>
+<!-- Footer -->
     <footer id="contact" class="footer">
         <p>Contact us: Feel free to reach out via email: <a href="mailto:sitesweep24@gmail.com">Sitesweep</a></p>
     </footer>
 
-    <!-- Popup Modal -->
-    <div id="popup" class="modal">
-        <div class="popup-content">
-            <span id="closePopup" class="close">&times;</span>
-            <div id="scrapedData"></div>
-        </div>
-    </div>
-
-    <!-- Edit Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span id="closeEditModal" class="close">&times;</span>
-            <form id="editForm">
-                <input type="hidden" id="editRecordId" name="id">
-                <label for="editTitle">Title:</label>
-                <input type="text" id="editTitle" name="title">
-                <label for="editDescription">Description:</label>
-                <textarea id="editDescription" name="description"></textarea>
-                <label for="editEmails">Emails:</label>
-                <input type="text" id="editEmails" name="emails">
-                <label for="editPhones">Phones:</label>
-                <input type="text" id="editPhones" name="phones">
-                <label for="editAddresses">Addresses:</label>
-                <input type="text" id="editAddresses" name="addresses">
-                <button type="submit">Save Changes</button>
-            </form>
-        </div>
-    </div>
 </body>
-
 </html>
