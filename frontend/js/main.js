@@ -42,19 +42,22 @@ document.addEventListener('DOMContentLoaded', function() {
     if (scrapeForm) {
         scrapeForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            const url = document.getElementById('scrapeUrl').value;
+            const formData = new FormData(scrapeForm);
             try {
                 const response = await fetch('/api/scrape', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: `url=${encodeURIComponent(url)}`
+                    body: formData
                 });
                 const result = await response.json();
                 if (response.ok) {
+                    // Populate the result section
+                    document.getElementById('resultTitle').textContent = result.data.title || "No title found";
+                    document.getElementById('resultDescription').textContent = result.data.description || "No description found";
+                    document.getElementById('resultEmails').textContent = result.data.emails.length ? result.data.emails.join(', ') : "No emails found";
+                    document.getElementById('resultPhones').textContent = result.data.phones.length ? result.data.phones.join(', ') : "No phone numbers found";
+                    document.getElementById('resultAddresses').textContent = result.data.addresses.length ? result.data.addresses.join(', ') : "No addresses found";
                     alert('Scraping successful!');
-                    // Handle result.data to update the UI as needed
+                    fetchHistory();  // Optionally fetch the history again to update the table
                 } else {
                     alert(result.message);
                 }
@@ -65,30 +68,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fetch and Display History
-    async function loadHistory() {
+    async function fetchHistory() {
         try {
             const response = await fetch('/api/history');
             const history = await response.json();
-            const historyTable = document.getElementById('historyTable');
-            if (historyTable) {
-                history.forEach(record => {
+            const historyTableBody = document.querySelector('#historyTable tbody');
+            if (historyTableBody) {
+                historyTableBody.innerHTML = '';
+                history.slice(0, 10).forEach(record => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${record.id}</td>
                         <td>${record.url}</td>
-                        <td>${record.date}</td>
+                        <td>${new Date(record.date).toLocaleString()}</td>
                         <td>${record.status}</td>
+                        <td><a href="#" onclick="fetchScrapedData(${record.id}); return false;">View Details</a></td>
                         <td><button class="editButton" data-id="${record.id}">Edit</button></td>
                         <td><button class="deleteButton" data-id="${record.id}">Delete</button></td>
                     `;
-                    historyTable.appendChild(row);
+                    historyTableBody.appendChild(row);
                 });
 
                 // Attach event listeners for edit and delete buttons
                 document.querySelectorAll('.editButton').forEach(button => {
                     button.addEventListener('click', function() {
                         const id = this.dataset.id;
-                        // Handle edit logic
+                        // Handle edit logic here (could be a separate function)
                     });
                 });
 
@@ -113,13 +118,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error fetching history:', error);
         }
     }
 
-    if (document.getElementById('historyTable')) {
-        loadHistory();
+    // Function to open popup with scraped data
+    function openPopup(data) {
+        const popup = document.getElementById('popup');
+        const scrapedDataDiv = document.getElementById('scrapedData');
+        scrapedDataDiv.innerHTML = `
+            <p><strong>Title:</strong> ${data.title || "No title found"}</p>
+            <p><strong>Description:</strong> ${data.description || "No description found"}</p>
+            <p><strong>Emails:</strong> ${data.emails.length ? data.emails.join(', ') : "No emails found"}</p>
+            <p><strong>Phones:</strong> ${data.phones.length ? data.phones.join(', ') : "No phone numbers found"}</p>
+            <p><strong>Addresses:</strong> ${data.addresses.length ? data.addresses.join(', ') : "No addresses found"}</p>
+        `;
+        popup.style.display = 'block';
     }
+
+    // Close popup when clicking close button
+    document.getElementById('closePopup').addEventListener('click', function() {
+        document.getElementById('popup').style.display = 'none';
+    });
+
+    // Function to fetch scraped data by ID
+    window.fetchScrapedData = function(id) {
+        fetch(`/api/scraped_data/${id}`)
+            .then(response => response.json())
+            .then(data => openPopup(data))
+            .catch(error => console.error('Error fetching scraped data:', error));
+    };
 
     // Handle Export CSV Button
     const exportCsvButton = document.getElementById('exportCsvButton');
@@ -140,4 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Initial fetch of scraping history
+    fetchHistory();
 });
