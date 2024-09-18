@@ -151,6 +151,25 @@ def login():
         else:
             flash('Login unsuccessful. Check your credentials.', 'danger')
     return render_template('login.html', form=form)
+#Route to Fetch Record Details
+@main.route('/api/record/<int:id>', methods=['GET'])
+@login_required
+def get_record(id):
+    record = ScrapingHistory.query.filter_by(id=id, user_id=current_user.id).first()
+    if record:
+        return jsonify({
+            'id': record.id,
+            'url': record.url,
+            'date': record.date,
+            'status': record.status,
+            'title': record.title,
+            'description': record.description,
+            'emails': record.emails,
+            'phones': record.phones,
+            'addresses': record.addresses
+        })
+    else:
+        return jsonify({'message': 'Record not found'}), 404
 
 # Route to update a scraping history record
 @main.route('/api/update_record', methods=['POST'])
