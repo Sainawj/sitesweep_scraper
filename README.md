@@ -2,9 +2,9 @@
 
 **SiteSweep Scraper** is a web scraping application designed to help users collect, store, and manage data from websites effortlessly. Users can input URLs, scrape specific data (metadata, emails, phone numbers, etc.), view scraping history, and export results in CSV format. This project was built as a minimum viable product (MVP) for web researchers, analysts, and individuals seeking to automate data extraction processes.
 
-> 🔗 **[Deployed Site](http://your-deployed-site-url.com)**  
-> 📄 **[Final Project Blog Post](http://link-to-blog-post.com)**  
-> 🔗 **[Jonathan Saina’s LinkedIn](https://www.linkedin.com/in/jonathan-saina/)**  
+> 🔗 **[Deployed Site](http://54.197.27.210:5000/)**  
+> 📄 **[Final Project Blog Post](https://www.linkedin.com/pulse/introducing-sitesweep-scraper-my-latest-web-scraping-project-saina-w9guf/)**  
+> 🔗 **[Jonathan Saina’s LinkedIn](https://www.linkedin.com/in/sainawj/)**  
 > 🔗 **[Georges Mbock’s LinkedIn](https://www.linkedin.com/in/georges-mbock/)**
 
 ## Features
