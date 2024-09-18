@@ -40,7 +40,7 @@ body {
 }
 
 .navbar {
-    margin-left: 220px;
+    margin-left: 0px;
 }
 
 .table {
@@ -92,7 +92,7 @@ body {
     color: white;
     text-align: center;
     padding: 10px;
-    position: absolute;
+    position: relative;
     bottom: 0;
     width: 100%;
 }
