@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultPhones = document.getElementById('resultPhones');
     const resultAddresses = document.getElementById('resultAddresses');
     const historyTableBody = document.querySelector('#historyTable tbody');
-    const detailsButtons = document.querySelectorAll('.details-btn');
 
     // Handle scraping form submission
     scrapeForm.addEventListener('submit', function(event) {
@@ -59,15 +58,42 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('popup').style.display = 'none';
     });
 
-    detailsButtons.forEach(button => {
+    // Handle view details click
+    document.querySelectorAll('.view-details').forEach(button => {
         button.addEventListener('click', function(event) {
             event.preventDefault();
             const id = this.getAttribute('data-id');
             // Fetch and display data based on `id`
-            // Implement your AJAX or fetch request here
+            fetch(`/api/scraped_data/${id}`)
+                .then(response => response.json())
+                .then(data => openPopup(data))
+                .catch(error => console.error('Error fetching scraped data:', error));
         });
     });
-    
+
+    // Handle delete record
+    document.querySelectorAll('.delete-record').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const id = this.getAttribute('data-id');
+
+            if (confirm("Are you sure you want to delete this record?")) {
+                fetch(`/api/delete_record/${id}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        location.reload();
+                    })
+                    .catch(error => alert("Failed to delete the record."));
+            }
+        });
+    });
+
+    // Export to CSV
+    document.getElementById('exportCsv').addEventListener('click', function() {
+        window.location.href = '/api/export_csv';
+    });
+
     // Fetch and populate scraping history
     function fetchHistory() {
         fetch('/api/history')
@@ -83,23 +109,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${record.url}</td>
                         <td>${new Date(record.date).toLocaleString()}</td>
                         <td>${record.status}</td>
-                        <td><a href="#" onclick="fetchScrapedData(${record.id}); return false;">View Details</a></td>
+                        <td><a href="#" class="view-details" data-id="${record.id}">View Details</a></td>
+                        <td><a href="#" class="edit-record" data-id="${record.id}">Edit</a></td>
+                        <td><a href="#" class="delete-record" data-id="${record.id}">Delete</a></td>
                     `;
                     historyTableBody.appendChild(row);
                 });
             })
-            .catch(error => {
-                console.error("Error fetching history:", error);
-            });
+            .catch(error => console.error("Error fetching history:", error));
     }
-
-    // Function to fetch scraped data by ID
-    window.fetchScrapedData = function(id) {
-        fetch(`/api/scraped_data/${id}`)
-            .then(response => response.json())
-            .then(data => openPopup(data))
-            .catch(error => console.error('Error fetching scraped data:', error));
-    };
 
     // Fetch history on page load
     fetchHistory();
