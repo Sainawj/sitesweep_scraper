@@ -76,10 +76,23 @@
                         <th>Date</th>
                         <th>Status</th>
                         <th>Details</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <button id="exportCsv">Export History to CSV</button>
                 <tbody>
+                    {% for record in history %}
+                    <tr>
+                        <td>{{ record.id }}</td>
+                        <td>{{ record.url }}</td>
+                        <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>{{ record.status }}</td>
+                        <td><a href="#" class="view-details" data-id="{{ record.id }}">View Details</a></td>
+                        <td><a href="#" class="edit-record" data-id="{{ record.id }}">Edit</a></td>
+                        <td><a href="#" class="delete-record" data-id="{{ record.id }}">Delete</a></td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </section>
@@ -111,6 +124,9 @@
             <button type="submit">Save Changes</button>
         </form>
     </div>
+
+    <!-- Script for handling form submission and AJAX requests -->
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>
 
 </html>
