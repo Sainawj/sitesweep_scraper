@@ -149,6 +149,32 @@ def login():
             flash('Login unsuccessful. Check your credentials.', 'danger')
     return render_template('login.html', form=form)
 
+# Route to update a scraping history record
+@main.route('/api/update_record/<int:id>', methods=['POST'])
+@login_required
+def update_record(id):
+    record = ScrapingHistory.query.filter_by(id=id, user_id=current_user.id).first()
+    if not record:
+        return jsonify({"message": "Record not found"}), 404
+
+    # Get updated fields from the form
+    title = request.form.get('title', record.title)
+    description = request.form.get('description', record.description)
+    emails = request.form.get('emails', record.emails)
+    phones = request.form.get('phones', record.phones)
+    addresses = request.form.get('addresses', record.addresses)
+
+    # Update the record fields
+    record.title = title
+    record.description = description
+    record.emails = emails
+    record.phones = phones
+    record.addresses = addresses
+
+    db.session.commit()
+    return jsonify({"message": "Record updated successfully"})
+
+
 # Route for logout (Requires login)
 @main.route('/logout')
 @login_required
