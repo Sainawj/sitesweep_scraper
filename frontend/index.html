@@ -78,6 +78,7 @@
                         <th>Details</th>
                     </tr>
                 </thead>
+                <button id="exportCsv">Export History to CSV</button>
                 <tbody>
                     {% for record in history %}
                     <tr>
@@ -87,6 +88,12 @@
                         <td>{{ record.status }}</td>
                         <td>
                             <a href="#" class="view-details" data-id="{{ record.id }}">View Details</a>
+                        </td>
+                        <td>
+                            <a href="#" class="edit-record" data-id="{{ record.id }}">Edit</a>
+                        </td>
+                        <td>
+                            <a href="#" class="delete-record" data-id="{{ record.id }}">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -108,7 +115,20 @@
             <div id="scrapedData"></div>
         </div>
     </div>
+ <!-- Update Record Form (Hidden by default) -->
+<div id="editForm" style="display: none;">
+    <h3>Edit Record</h3>
+    <form id="updateRecordForm" method="POST">
+        <label>Title: <input type="text" id="editTitle" name="title"></label><br>
+        <label>Description: <input type="text" id="editDescription" name="description"></label><br>
+        <label>Emails: <input type="text" id="editEmails" name="emails"></label><br>
+        <label>Phones: <input type="text" id="editPhones" name="phones"></label><br>
+        <label>Addresses: <input type="text" id="editAddresses" name="addresses"></label><br>
+        <button type="submit">Save Changes</button>
+    </form>
+</div>
 
+    
     <!-- Script for handling form submission and AJAX requests -->
     <script>
         // Handle form submission for scraping
