@@ -50,17 +50,22 @@ To get started with SiteSweep Scraper on your local machine:
    cd sitesweep-scraper
 
 3. **Set up a virtual environment**
+   ```bash
    python3 -m venv venv
    source venv/bin/activate   # For Linux/Mac
    venv\Scripts\activate      # For Windows
-4. **Install dependencies:**
+5. **Install dependencies:**
+   ```bash
    pip install -r requirements.txt
-5. **Set up MySQL database**
+6. **Set up MySQL database**
+   ```bash
    mysql -u root -p
    CREATE DATABASE scraping_db;
    **Add required tables**
    mysql -u root -p scraping_db < /home/user/database/schema.sql
 
+7. **Run the App!!**
+     ```bash
    source venv/bin/activate
    export FLASK_APP=app.py
    export FLASK_ENV=development
