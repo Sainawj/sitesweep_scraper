@@ -98,6 +98,5 @@ body {
 }
 /* Ensure buttons are visible */
 .view-details, .edit-record, .delete-record {
-    display: inline-block !important; /* Force display inline */
-    visibility: visible !important;   /* Force visibility */
+    display: block !important;  /* Force visibility */
 }
