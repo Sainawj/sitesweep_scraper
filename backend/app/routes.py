@@ -5,6 +5,9 @@ from .models import ScrapingHistory, User
 from . import db
 from .forms import LoginForm, SignupForm
 from werkzeug.security import generate_password_hash, check_password_hash
+import csv
+from io import StringIO
+from flask import make_response
 
 # Define a Blueprint for routes
 main = Blueprint('main', __name__)
@@ -174,7 +177,40 @@ def update_record(id):
     db.session.commit()
     return jsonify({"message": "Record updated successfully"})
 
+# Route to delete a scraping history record
+@main.route('/api/delete_record/<int:id>', methods=['DELETE'])
+@login_required
+def delete_record(id):
+    record = ScrapingHistory.query.filter_by(id=id, user_id=current_user.id).first()
+    if not record:
+        return jsonify({"message": "Record not found"}), 404
 
+    db.session.delete(record)
+    db.session.commit()
+    return jsonify({"message": "Record deleted successfully"})
+
+# Route to export scraping history to CSV
+@main.route('/api/export_csv', methods=['GET'])
+@login_required
+def export_csv():
+    records = ScrapingHistory.query.filter_by(user_id=current_user.id).all()
+
+    si = StringIO()
+    writer = csv.writer(si)
+    
+    # Write header
+    writer.writerow(['ID', 'URL', 'Title', 'Description', 'Emails', 'Phones', 'Addresses', 'Date'])
+    
+    # Write data rows
+    for record in records:
+        writer.writerow([record.id, record.url, record.title, record.description, record.emails,
+                         record.phones, record.addresses, record.date])
+
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=scraping_history.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
+    
 # Route for logout (Requires login)
 @main.route('/logout')
 @login_required
