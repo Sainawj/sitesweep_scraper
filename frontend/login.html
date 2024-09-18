@@ -24,7 +24,8 @@
             {% endif %}
         </ul>
     </div>
-    <h1>Login</h1>
+    <div id="popup" class="modal">
+        <h1>Login</h1>
     {% with messages = get_flashed_messages(with_categories=True) %}
       {% if messages %}
         <ul class="flashes">
@@ -55,6 +56,7 @@
         </div>
     </form>
     <p>Don't have an account? <a href="{{ url_for('main.register') }}">Sign up here</a></p>
+</div>
 <!-- Footer -->
     <footer id="contact" class="footer">
         <p>Contact us: Feel free to reach out via email: <a href="mailto:sitesweep24@gmail.com">Sitesweep</a></p>
