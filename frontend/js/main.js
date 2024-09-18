@@ -89,10 +89,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     historyTableBody.appendChild(row);
                 });
 
+                // Debugging line to check if edit buttons are selected
+                console.log('Edit buttons:', document.querySelectorAll('.editButton'));
+
                 // Attach event listeners for edit and delete buttons
                 document.querySelectorAll('.editButton').forEach(button => {
                     button.addEventListener('click', async function() {
                         const id = this.dataset.id;
+                        console.log('Edit button clicked, ID:', id); // Debugging line
                         try {
                             const response = await fetch(`/api/record/${id}`);
                             const data = await response.json();
