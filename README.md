@@ -45,7 +45,7 @@ To get started with SiteSweep Scraper on your local machine:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/sitesweep-scraper.git
+   git clone https://github.com/sainawj/sitesweep_scraper.git
 2. **Navigate to the project folder:**
    cd sitesweep-scraper
 
