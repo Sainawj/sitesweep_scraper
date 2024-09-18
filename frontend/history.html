@@ -24,14 +24,38 @@
             {% endif %}
         </ul>
     </div>
-<!-- Main Content Section -->
+    <!-- Main Content Section -->
     <div id="content">
         <!-- Navbar and search form -->
-       
+                <!-- Scraped Data Section -->
+        <section id="scraping" class="section-padding">
+            <h2>Scraped Data</h2>
+            <table id="scrapedResults" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Emails</th>
+                        <th>Phones</th>
+                        <th>Addresses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="resultTitle">N/A</td>
+                        <td id="resultDescription">N/A</td>
+                        <td id="resultEmails">N/A</td>
+                        <td id="resultPhones">N/A</td>
+                        <td id="resultAddresses">N/A</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
 
         <!-- Scraping History Section -->
         <section id="history" class="section-padding">
             <h2>Scraping History</h2>
+            <button id="exportCsvButton" class="btn btn-primary">Export History to CSV</button>
             <table id="historyTable" class="table table-bordered scraping-history-table">
                 <thead>
                     <tr>
@@ -40,21 +64,12 @@
                         <th>Date</th>
                         <th>Status</th>
                         <th>Details</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
-                <button id="exportCsv">Export History to CSV</button>
                 <tbody>
-                    {% for record in history %}
-                     <tr>
-                        <td>{{ record.id }}</td>
-                        <td>{{ record.url }}</td>
-                        <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                        <td>{{ record.status }}</td>
-                        <td><a href="#" class="view-details" data-id="{{ record.id }}">View Details</a></td>
-                        <td><a href="#" class="edit-record" data-id="{{ record.id }}">Edit</a></td>
-                        <td><a href="#" class="delete-record" data-id="{{ record.id }}">Delete</a></td>
-                    </tr>
-                    {% endfor %}
+                    <!-- Dynamic content will be added here by JavaScript -->
                 </tbody>
             </table>
         </section>
@@ -66,30 +81,34 @@
     </footer>
 
     <!-- Popup Modal -->
-    <div id="popup" style="display: none;">
-        <div id="popupContent">
-            <span id="closePopup">&times;</span>
-            <h2>Scraped Data Details</h2>
-            <div id="scrapedData"></div>
-        </div>
+<div id="popup" class="modal">
+    <div class="popup-content">
+        <span id="closePopup" class="close">&times;</span>
+        <div id="scrapedData"></div>
     </div>
+</div>
 
-    <!-- Update Record Form (Hidden by default) -->
-    <div id="editForm" style="display: none;">
-        <h3>Edit Record</h3>
-        <form id="updateRecordForm" method="POST">
-            <label>Title: <input type="text" id="editTitle" name="title"></label><br>
-            <label>Description: <input type="text" id="editDescription" name="description"></label><br>
-            <label>Emails: <input type="text" id="editEmails" name="emails"></label><br>
-            <label>Phones: <input type="text" id="editPhones" name="phones"></label><br>
-            <label>Addresses: <input type="text" id="editAddresses" name="addresses"></label><br>
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span id="closeEditModal" class="close">&times;</span>
+        <form id="editForm">
+            <input type="hidden" id="editRecordId" name="id">
+            <label for="editTitle">Title:</label>
+            <input type="text" id="editTitle" name="title">
+            <label for="editDescription">Description:</label>
+            <textarea id="editDescription" name="description"></textarea>
+            <label for="editEmails">Emails:</label>
+            <input type="text" id="editEmails" name="emails">
+            <label for="editPhones">Phones:</label>
+            <input type="text" id="editPhones" name="phones">
+            <label for="editAddresses">Addresses:</label>
+            <input type="text" id="editAddresses" name="addresses">
             <button type="submit">Save Changes</button>
         </form>
     </div>
-<!-- Footer -->
-    <footer id="contact" class="footer">
-        <p>Contact us: Feel free to reach out via email: <a href="mailto:sitesweep24@gmail.com">Sitesweep</a></p>
-    </footer>
+</div>
+    
 
 </body>
 </html>
