@@ -21,6 +21,7 @@
             <li><a href="#contact">Contact us</a></li>
             {% if current_user.is_authenticated %}
             <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+            <li><a href="{{ url_for('main.history') }}">History</a></li>
             {% else %}
             <li><a href="{{ url_for('main.login') }}">Login</a></li>
             {% endif %}
@@ -31,10 +32,10 @@
     <div id="content">
         <!-- Navbar and search form -->
         <nav class="navbar navbar-light bg-light">
-            <form id="scrapeForm" class="form-inline">
+            <form id="scrapeForm" class="form-inline" method="POST" action="{{ url_for('main.scrape') }}">
                 <label for="url">Enter URL to Scrape:</label>
                 <input class="form-control mr-sm-2" type="text" placeholder="Enter URL to scrape" aria-label="Search"
-                    id="url" required>
+                    id="url" name="url" required>
                 <button class="btn btn-primary my-2 my-sm-0" type="submit">Scrape</button>
             </form>
         </nav>
@@ -108,7 +109,7 @@
         </div>
     </div>
 
-    <!-- Script for handling form submission -->
+    <!-- Script for handling form submission and AJAX requests -->
     <script>
         // Handle form submission for scraping
         $('#scrapeForm').on('submit', function (event) {
@@ -117,16 +118,15 @@
 
             if (url) {
                 $.ajax({
-                    url: "{{ url_for('main.scrape') }}",  // Make sure this route exists in your Flask backend
+                    url: "{{ url_for('main.scrape') }}",
                     type: "POST",
-                    data: JSON.stringify({ "url": url }),
-                    contentType: "application/json",
+                    data: { "url": url },
                     success: function (response) {
-                        $('#resultTitle').text(response.title || 'N/A');
-                        $('#resultDescription').text(response.description || 'N/A');
-                        $('#resultEmails').text(response.emails || 'N/A');
-                        $('#resultPhones').text(response.phones || 'N/A');
-                        $('#resultAddresses').text(response.addresses || 'N/A');
+                        $('#resultTitle').text(response.data.title || 'N/A');
+                        $('#resultDescription').text(response.data.description || 'N/A');
+                        $('#resultEmails').text(response.data.emails.join(', ') || 'N/A');
+                        $('#resultPhones').text(response.data.phones.join(', ') || 'N/A');
+                        $('#resultAddresses').text(response.data.addresses.join(', ') || 'N/A');
                     },
                     error: function () {
                         alert("Error scraping the data. Please try again.");
@@ -143,16 +143,15 @@
             const recordId = $(this).data('id');
 
             $.ajax({
-                url: "{{ url_for('main.get_details') }}",  // Ensure this route is in Flask backend to fetch record details
+                url: `/api/scraped_data/${recordId}`,
                 type: "GET",
-                data: { "id": recordId },
                 success: function (response) {
                     $('#scrapedData').html(`
                         <p><strong>Title:</strong> ${response.title}</p>
                         <p><strong>Description:</strong> ${response.description}</p>
-                        <p><strong>Emails:</strong> ${response.emails}</p>
-                        <p><strong>Phones:</strong> ${response.phones}</p>
-                        <p><strong>Addresses:</strong> ${response.addresses}</p>
+                        <p><strong>Emails:</strong> ${response.emails.join(', ')}</p>
+                        <p><strong>Phones:</strong> ${response.phones.join(', ')}</p>
+                        <p><strong>Addresses:</strong> ${response.addresses.join(', ')}</p>
                     `);
                     $('#popup').show();
                 },
