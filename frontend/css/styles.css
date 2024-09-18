@@ -53,19 +53,22 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    display: none;
+    background-color: rgba(0, 0, 0, 0.5); /* Black transparent 50% background */
+    display: flex; /* Changed from none to flex for centering */
     justify-content: center;
     align-items: center;
+    color: white; /* White text color */
 }
 
 .popup-content {
     background-color: white;
+    color: black; /* Text color inside popup-content */
     padding: 20px;
     border-radius: 5px;
     max-width: 500px;
     width: 100%;
 }
+
 
 #closePopup {
     float: right;
