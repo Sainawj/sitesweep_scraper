@@ -94,22 +94,21 @@
     </footer>
 
     <!-- Popup Modal -->
-    <div id="popup" style="display: none;">
-        <div id="popupContent">
-            <span id="closePopup">&times;</span>
-            <h2>Scraped Data Details</h2>
-            <div id="scrapedData"></div>
-        </div>
-    </div>
-
-    <!-- Edit Record Modal -->
-<div id="editModal" class="popup">
+<div id="popup" class="modal">
     <div class="popup-content">
+        <span id="closePopup" class="close">&times;</span>
+        <div id="scrapedData"></div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
         <span id="closeEditModal" class="close">&times;</span>
         <form id="editForm">
             <input type="hidden" id="editRecordId" name="id">
             <label for="editTitle">Title:</label>
-            <input type="text" id="editTitle" name="title" required>
+            <input type="text" id="editTitle" name="title">
             <label for="editDescription">Description:</label>
             <textarea id="editDescription" name="description"></textarea>
             <label for="editEmails">Emails:</label>
