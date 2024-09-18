@@ -96,46 +96,22 @@ document.addEventListener('DOMContentLoaded', function() {
                         try {
                             const response = await fetch(`/api/record/${id}`);
                             const data = await response.json();
-                                if (response.ok) {
-                                // Assuming you have an edit form with input fields for the record
+                            if (response.ok) {
+                                // Populate the edit form with existing data
                                 document.getElementById('editRecordId').value = data.id;
                                 document.getElementById('editUrl').value = data.url;
-                                document.getElementById('editDate').value = new Date(data.date).toLocaleDateString();
+                                document.getElementById('editDate').value = new Date(data.date).toISOString().split('T')[0];
                                 document.getElementById('editStatus').value = data.status;
                                 document.getElementById('editModal').style.display = 'block';  // Show the edit modal
-                                } else {
+                            } else {
                                 alert(data.message);
-                                            }
-                                    } catch (error) {
-                                console.error('Error fetching record data:', error);
-                                            }
-                                        });
-                                });
-                    // Handle Edit Form Submission
-const editForm = document.getElementById('editForm');
-if (editForm) {
-    editForm.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const formData = new FormData(editForm);
-        try {
-            const response = await fetch('/api/update_record', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            if (response.ok) {
-                alert('Record updated successfully!');
-                document.getElementById('editModal').style.display = 'none';  // Hide the edit modal
-                fetchHistory();  // Refresh the history table
-            } else {
-                alert(result.message);
-            }
-        } catch (error) {
-            console.error('Error updating record:', error);
-        }
-    });
-}
-                
+                            }
+                        } catch (error) {
+                            console.error('Error fetching record data:', error);
+                        }
+                    });
+                });
+
                 document.querySelectorAll('.deleteButton').forEach(button => {
                     button.addEventListener('click', async function() {
                         const id = this.dataset.id;
@@ -161,32 +137,30 @@ if (editForm) {
         }
     }
 
-    // Function to open popup with scraped data
-    function openPopup(data) {
-        const popup = document.getElementById('popup');
-        const scrapedDataDiv = document.getElementById('scrapedData');
-        scrapedDataDiv.innerHTML = `
-            <p><strong>Title:</strong> ${data.title || "No title found"}</p>
-            <p><strong>Description:</strong> ${data.description || "No description found"}</p>
-            <p><strong>Emails:</strong> ${data.emails.length ? data.emails.join(', ') : "No emails found"}</p>
-            <p><strong>Phones:</strong> ${data.phones.length ? data.phones.join(', ') : "No phone numbers found"}</p>
-            <p><strong>Addresses:</strong> ${data.addresses.length ? data.addresses.join(', ') : "No addresses found"}</p>
-        `;
-        popup.style.display = 'block';
+    // Handle Edit Form Submission
+    const editForm = document.getElementById('editForm');
+    if (editForm) {
+        editForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(editForm);
+            try {
+                const response = await fetch('/api/update_record', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Record updated successfully!');
+                    document.getElementById('editModal').style.display = 'none';  // Hide the edit modal
+                    fetchHistory();  // Refresh the history table
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Error updating record:', error);
+            }
+        });
     }
-
-    // Close popup when clicking close button
-    document.getElementById('closePopup').addEventListener('click', function() {
-        document.getElementById('popup').style.display = 'none';
-    });
-
-    // Function to fetch scraped data by ID
-    window.fetchScrapedData = function(id) {
-        fetch(`/api/scraped_data/${id}`)
-            .then(response => response.json())
-            .then(data => openPopup(data))
-            .catch(error => console.error('Error fetching scraped data:', error));
-    };
 
     // Handle Export CSV Button
     const exportCsvButton = document.getElementById('exportCsvButton');
@@ -194,8 +168,8 @@ if (editForm) {
         exportCsvButton.addEventListener('click', async function() {
             try {
                 const response = await fetch('/api/export_csv');
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
+                const result = await response.blob();
+                const url = window.URL.createObjectURL(result);
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = 'scraping_history.csv';
@@ -203,11 +177,8 @@ if (editForm) {
                 a.click();
                 a.remove();
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error exporting CSV:', error);
             }
         });
     }
-
-    // Initial fetch of scraping history
-    fetchHistory();
 });
