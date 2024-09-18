@@ -1,11 +1,18 @@
-# Data Scraper & Ingestor
+# SiteSweep : Scraper
 
-A web application for scraping data from websites and managing the scraped data.
+**SiteSweep Scraper** is a web scraping application designed to help users collect, store, and manage data from websites effortlessly. Users can input URLs, scrape specific data (metadata, emails, phone numbers, etc.), view scraping history, and export results in CSV format. This project was built as a minimum viable product (MVP) for web researchers, analysts, and individuals seeking to automate data extraction processes.
+
+> 🔗 **[Deployed Site](http://your-deployed-site-url.com)**  
+> 📄 **[Final Project Blog Post](http://link-to-blog-post.com)**  
+> 🔗 **[Jonathan Saina’s LinkedIn](https://www.linkedin.com/in/jonathan-saina/)**  
+> 🔗 **[Georges Mbock’s LinkedIn](https://www.linkedin.com/in/georges-mbock/)**
 
 ## Features
-- Web scraping with customizable parameters
-- Real-time data ingestion and storage
-- View scraping history
+- User login
+- Web scraping
+- Access to scraping history
+- CRUD funtions on the scraping history
+- Export to CSV
 
 ## Setup
 
@@ -27,3 +34,34 @@ The backend is a Flask application with API routes for scraping and fetching his
    ```bash
    git clone https://github.com/sainawj/sitesweep_scraper
 More infor on: https://sainawj.github.io/sitesweep/
+
+![Screenshot](user_experience.png)
+
+---
+
+## 🛠 Installation
+
+To get started with SiteSweep Scraper on your local machine:
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/sitesweep-scraper.git
+2. **Navigate to the project folder:**
+   cd sitesweep-scraper
+
+3. **Set up a virtual environment**
+   python3 -m venv venv
+   source venv/bin/activate   # For Linux/Mac
+   venv\Scripts\activate      # For Windows
+4. **Install dependencies:**
+   pip install -r requirements.txt
+5. **Set up MySQL database**
+   mysql -u root -p
+   CREATE DATABASE scraping_db;
+   **Add required tables**
+   mysql -u root -p scraping_db < /home/user/database/schema.sql
+
+   source venv/bin/activate
+   export FLASK_APP=app.py
+   export FLASK_ENV=development
+   FLASK_APP=backend/app flask run --host=0.0.0.0
