@@ -103,18 +103,30 @@
     </div>
 
     <!-- Edit Record Modal -->
-    <div id="editModal" style="display:none;">
-        <form id="editForm">
-            <input type="hidden" id="editRecordId" name="id">
-            <label for="editUrl">URL:</label>
-            <input type="text" id="editUrl" name="url" required>
-            <label for="editDate">Date:</label>
-            <input type="date" id="editDate" name="date" required>
-            <label for="editStatus">Status:</label>
-            <input type="text" id="editStatus" name="status" required>
-            <button type="submit">Update</button>
-            <button type="button" onclick="document.getElementById('editModal').style.display='none';">Cancel</button>
-        </form>
+    <div id="editModal" class="popup">
+        <div class="popup-content">
+            <span id="closeEditModal" class="close">&times;</span>
+            <form id="editForm">
+                <input type="hidden" id="editRecordId" name="id">
+                <label for="editUrl">URL:</label>
+                <input type="text" id="editUrl" name="url" required>
+                <label for="editDate">Date:</label>
+                <input type="date" id="editDate" name="date" required>
+                <label for="editStatus">Status:</label>
+                <input type="text" id="editStatus" name="status" required>
+                <label for="editTitle">Title:</label>
+                <input type="text" id="editTitle" name="title">
+                <label for="editDescription">Description:</label>
+                <textarea id="editDescription" name="description"></textarea>
+                <label for="editEmails">Emails:</label>
+                <input type="text" id="editEmails" name="emails">
+                <label for="editPhones">Phones:</label>
+                <input type="text" id="editPhones" name="phones">
+                <label for="editAddresses">Addresses:</label>
+                <input type="text" id="editAddresses" name="addresses">
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
     </div>
 
 </body>
