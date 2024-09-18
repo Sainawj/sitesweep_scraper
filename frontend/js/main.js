@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 // Populate the edit form with existing data
                                 document.getElementById('editRecordId').value = data.id;
                                 document.getElementById('editUrl').value = data.url;
-                                document.getElementById('editDate').value = new Date(data.date).toISOString().split('T')[0];
+                                document.getElementById('editDate').value = new Date(data.date).toLocaleDateString();
                                 document.getElementById('editStatus').value = data.status;
                                 document.getElementById('editModal').style.display = 'block';  // Show the edit modal
                             } else {
@@ -162,14 +162,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Function to open popup with scraped data
+    function openPopup(data) {
+        const popup = document.getElementById('popup');
+        const scrapedDataDiv = document.getElementById('scrapedData');
+        scrapedDataDiv.innerHTML = `
+            <p><strong>Title:</strong> ${data.title || "No title found"}</p>
+            <p><strong>Description:</strong> ${data.description || "No description found"}</p>
+            <p><strong>Emails:</strong> ${data.emails.length ? data.emails.join(', ') : "No emails found"}</p>
+            <p><strong>Phones:</strong> ${data.phones.length ? data.phones.join(', ') : "No phone numbers found"}</p>
+            <p><strong>Addresses:</strong> ${data.addresses.length ? data.addresses.join(', ') : "No addresses found"}</p>
+        `;
+        popup.style.display = 'block';
+    }
+
+    // Close popup when clicking close button
+    document.getElementById('closePopup').addEventListener('click', function() {
+        document.getElementById('popup').style.display = 'none';
+    });
+
+    // Function to fetch scraped data by ID
+    window.fetchScrapedData = function(id) {
+        fetch(`/api/scraped_data/${id}`)
+            .then(response => response.json())
+            .then(data => openPopup(data))
+            .catch(error => console.error('Error fetching scraped data:', error));
+    };
+
     // Handle Export CSV Button
     const exportCsvButton = document.getElementById('exportCsvButton');
     if (exportCsvButton) {
         exportCsvButton.addEventListener('click', async function() {
             try {
                 const response = await fetch('/api/export_csv');
-                const result = await response.blob();
-                const url = window.URL.createObjectURL(result);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = 'scraping_history.csv';
@@ -181,4 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Initial fetch of scraping history
+    fetchHistory();
 });
