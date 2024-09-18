@@ -96,3 +96,8 @@ body {
     bottom: 0;
     width: 100%;
 }
+/* Ensure buttons are visible */
+.view-details, .edit-record, .delete-record {
+    display: inline-block !important; /* Force display inline */
+    visibility: visible !important;   /* Force visibility */
+}
