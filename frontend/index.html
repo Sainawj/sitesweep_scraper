@@ -16,8 +16,9 @@
 <body>
     <!-- Sidebar for navigation -->
     <div id="sidebar" class="d-inline-block position-fixed">
-        <ul>
-            <li><a href="#about">About Sitesweep</a></li>
+       <ul>
+            <li><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li><a href="https://sainawj.github.io/sitesweep/">About Sitesweep</a></li>
             <li><a href="#contact">Contact us</a></li>
             {% if current_user.is_authenticated %}
             <li><a href="#" id="logoutButton">Logout</a></li>
