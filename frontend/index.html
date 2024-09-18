@@ -75,7 +75,7 @@
                         <th>URL</th>
                         <th>Date</th>
                         <th>Status</th>
-                        <th>Details</th>
+                        <th>Actions</th> <!-- Changed the heading to "Actions" to group the buttons -->
                     </tr>
                 </thead>
                 <button id="exportCsv">Export History to CSV</button>
@@ -87,13 +87,9 @@
                         <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                         <td>{{ record.status }}</td>
                         <td>
-                            <a href="#" class="view-details" data-id="{{ record.id }}">View Details</a>
-                        </td>
-                        <td>
-                            <a href="#" class="edit-record" data-id="{{ record.id }}">Edit</a>
-                        </td>
-                        <td>
-                            <a href="#" class="delete-record" data-id="{{ record.id }}">Delete</a>
+                            <a href="#" class="view-details btn btn-info btn-sm" data-id="{{ record.id }}">View Details</a>
+                            <a href="#" class="edit-record btn btn-warning btn-sm" data-id="{{ record.id }}">Edit</a>
+                            <a href="#" class="delete-record btn btn-danger btn-sm" data-id="{{ record.id }}">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -115,20 +111,20 @@
             <div id="scrapedData"></div>
         </div>
     </div>
- <!-- Update Record Form (Hidden by default) -->
-<div id="editForm" style="display: none;">
-    <h3>Edit Record</h3>
-    <form id="updateRecordForm" method="POST">
-        <label>Title: <input type="text" id="editTitle" name="title"></label><br>
-        <label>Description: <input type="text" id="editDescription" name="description"></label><br>
-        <label>Emails: <input type="text" id="editEmails" name="emails"></label><br>
-        <label>Phones: <input type="text" id="editPhones" name="phones"></label><br>
-        <label>Addresses: <input type="text" id="editAddresses" name="addresses"></label><br>
-        <button type="submit">Save Changes</button>
-    </form>
-</div>
 
-    
+    <!-- Update Record Form (Hidden by default) -->
+    <div id="editForm" style="display: none;">
+        <h3>Edit Record</h3>
+        <form id="updateRecordForm" method="POST">
+            <label>Title: <input type="text" id="editTitle" name="title"></label><br>
+            <label>Description: <input type="text" id="editDescription" name="description"></label><br>
+            <label>Emails: <input type="text" id="editEmails" name="emails"></label><br>
+            <label>Phones: <input type="text" id="editPhones" name="phones"></label><br>
+            <label>Addresses: <input type="text" id="editAddresses" name="addresses"></label><br>
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
     <!-- Script for handling form submission and AJAX requests -->
     <script>
         // Handle form submission for scraping
@@ -186,30 +182,30 @@
             $('#popup').hide();
         });
 
-    // Handle delete record
-    $('.delete-record').on('click', function (event) {
-        event.preventDefault();
-        const recordId = $(this).data('id');
+        // Handle delete record
+        $('.delete-record').on('click', function (event) {
+            event.preventDefault();
+            const recordId = $(this).data('id');
 
-        if (confirm("Are you sure you want to delete this record?")) {
-            $.ajax({
-                url: `/api/delete_record/${recordId}`,
-                type: "DELETE",
-                success: function (response) {
-                alert(response.message);
-                location.reload();
-                },
-            error: function () {
-                alert("Failed to delete the record.");
-                }
-            });
-        }
-    });
+            if (confirm("Are you sure you want to delete this record?")) {
+                $.ajax({
+                    url: `/api/delete_record/${recordId}`,
+                    type: "DELETE",
+                    success: function (response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function () {
+                        alert("Failed to delete the record.");
+                    }
+                });
+            }
+        });
 
         // Handle export to CSV
-    $('#exportCsv').on('click', function () {
-        window.location.href = '/api/export_csv';
-    });
+        $('#exportCsv').on('click', function () {
+            window.location.href = '/api/export_csv';
+        });
     </script>
 </body>
 
