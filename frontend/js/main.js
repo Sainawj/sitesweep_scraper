@@ -89,24 +89,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     historyTableBody.appendChild(row);
                 });
 
-                // Debugging line to check if edit buttons are selected
-                console.log('Edit buttons:', document.querySelectorAll('.editButton'));
-
                 // Attach event listeners for edit and delete buttons
                 document.querySelectorAll('.editButton').forEach(button => {
                     button.addEventListener('click', async function() {
                         const id = this.dataset.id;
-                        console.log('Edit button clicked, ID:', id); // Debugging line
                         try {
                             const response = await fetch(`/api/record/${id}`);
                             const data = await response.json();
                             if (response.ok) {
-                                // Populate the edit form with existing data
-                                document.getElementById('editRecordId').value = data.id;
-                                document.getElementById('editUrl').value = data.url;
-                                document.getElementById('editDate').value = new Date(data.date).toLocaleDateString();
-                                document.getElementById('editStatus').value = data.status;
-                                document.getElementById('editModal').style.display = 'block';  // Show the edit modal
+                                openEditModal(data); // Use the openEditModal function
                             } else {
                                 alert(data.message);
                             }
@@ -217,64 +208,18 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchHistory();
 });
 
-// Function to open edit modal with record data
+// Function to open the edit modal with data
 function openEditModal(data) {
     document.getElementById('editRecordId').value = data.id;
-    document.getElementById('editUrl').value = data.url;
-    document.getElementById('editDate').value = new Date(data.date).toLocaleDateString();
-    document.getElementById('editStatus').value = data.status;
-    document.getElementById('editTitle').value = data.title;
-    document.getElementById('editDescription').value = data.description;
-    document.getElementById('editEmails').value = data.emails;
-    document.getElementById('editPhones').value = data.phones;
-    document.getElementById('editAddresses').value = data.addresses;
-    document.getElementById('editModal').style.display = 'block';  // Show the edit modal
+    document.getElementById('editTitle').value = data.title || '';
+    document.getElementById('editDescription').value = data.description || '';
+    document.getElementById('editEmails').value = data.emails || '';
+    document.getElementById('editPhones').value = data.phones || '';
+    document.getElementById('editAddresses').value = data.addresses || '';
+    document.getElementById('editModal').style.display = 'flex';  // Show the edit modal
 }
-
-// Handle Edit Button Click
-document.querySelectorAll('.editButton').forEach(button => {
-    button.addEventListener('click', async function() {
-        const id = this.dataset.id;
-        try {
-            const response = await fetch(`/api/record/${id}`);
-            const data = await response.json();
-            if (response.ok) {
-                openEditModal(data);
-            } else {
-                alert(data.message);
-            }
-        } catch (error) {
-            console.error('Error fetching record data:', error);
-        }
-    });
-});
 
 // Close edit modal when clicking close button
 document.getElementById('closeEditModal').addEventListener('click', function() {
     document.getElementById('editModal').style.display = 'none';
 });
-
-// Handle Edit Form Submission
-const editForm = document.getElementById('editForm');
-if (editForm) {
-    editForm.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const formData = new FormData(editForm);
-        try {
-            const response = await fetch('/api/update_record', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            if (response.ok) {
-                alert('Record updated successfully!');
-                document.getElementById('editModal').style.display = 'none';  // Hide the edit modal
-                fetchHistory();  // Refresh the history table
-            } else {
-                alert(result.message);
-            }
-        } catch (error) {
-            console.error('Error updating record:', error);
-        }
-    });
-}
