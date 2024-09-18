@@ -32,10 +32,10 @@
     <div id="content">
         <!-- Navbar and search form -->
         <nav class="navbar navbar-light bg-light">
-            <form id="scrapeForm" class="form-inline">
-                <label for="url">Sweep!!:</label>
+            <form id="scrapeForm" class="form-inline" method="POST">
+                <label for="scrapeUrl">Sweep!!:</label>
                 <input class="form-control mr-sm-2" type="text" placeholder="Enter URL to scrape" aria-label="Search"
-                    id="url" name="url" required>
+                    id="scrapeUrl" name="url" required>
                 <button class="btn btn-primary my-2 my-sm-0" type="submit">Scrape</button>
             </form>
         </nav>
@@ -68,6 +68,7 @@
         <!-- Scraping History Section -->
         <section id="history" class="section-padding">
             <h2>Scraping History</h2>
+            <button id="exportCsvButton" class="btn btn-primary">Export History to CSV</button>
             <table id="historyTable" class="table table-bordered scraping-history-table">
                 <thead>
                     <tr>
@@ -80,9 +81,8 @@
                         <th>Delete</th>
                     </tr>
                 </thead>
-                <button id="exportCsv">Export History to CSV</button>
                 <tbody>
-                    <!-- Data will be dynamically inserted by JavaScript -->
+                    <!-- Dynamic content will be added here by JavaScript -->
                 </tbody>
             </table>
         </section>
@@ -105,7 +105,8 @@
     <!-- Update Record Form (Hidden by default) -->
     <div id="editForm" style="display: none;">
         <h3>Edit Record</h3>
-        <form id="updateRecordForm">
+        <form id="updateRecordForm" method="POST">
+            <input type="hidden" id="recordId" name="id">
             <label>Title: <input type="text" id="editTitle" name="title"></label><br>
             <label>Description: <input type="text" id="editDescription" name="description"></label><br>
             <label>Emails: <input type="text" id="editEmails" name="emails"></label><br>
@@ -115,8 +116,6 @@
         </form>
     </div>
 
-    <!-- JavaScript file -->
-    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>
 
 </html>
