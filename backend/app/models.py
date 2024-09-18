@@ -11,13 +11,29 @@ class ScrapingHistory(db.Model):
     data = db.Column(db.Text, nullable=False)
     date = db.Column(db.TIMESTAMP, default=db.func.current_timestamp(), nullable=False)
     status = db.Column(db.String(50), default='Completed')
-    title = db.Column(db.String(255))
-    description = db.Column(db.Text)
-    emails = db.Column(db.Text)
-    phones = db.Column(db.Text)
-    addresses = db.Column(db.Text)
+    title = db.Column(db.String(255))  # Added to store page title
+    description = db.Column(db.Text)  # Added to store meta description
+    emails = db.Column(db.Text)  # Added to store found email addresses
+    phones = db.Column(db.Text)  # Added to store found phone numbers
+    addresses = db.Column(db.Text)  # Added to store found physical addresses
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Foreign key to users table
     user = db.relationship('User', backref=db.backref('scraping_histories', lazy=True))  # Relationship to User
+
+    def to_dict(self):
+        """
+        Converts the ScrapingHistory model data to a dictionary for JSON serialization.
+        """
+        return {
+            'id': self.id,
+            'url': self.url,
+            'title': self.title,
+            'description': self.description,
+            'emails': self.emails,
+            'phones': self.phones,
+            'addresses': self.addresses,
+            'date': self.date,
+            'status': self.status
+        }
 
     def __repr__(self):
         return f'<ScrapingHistory {self.url}>'
