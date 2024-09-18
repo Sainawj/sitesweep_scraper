@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sitesweep: Know page contents on click!">
     <title>Sitesweep</title>
-    <!-- Link to external CSS for styles -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -21,20 +20,20 @@
             <li><a href="#contact">Contact us</a></li>
             {% if current_user.is_authenticated %}
             <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+            <li><a href="{{ url_for('main.history') }}">History</a></li>
             {% else %}
             <li><a href="{{ url_for('main.login') }}">Login</a></li>
+            <li><a href="{{ url_for('main.signup') }}">Signup</a></li>
             {% endif %}
         </ul>
     </div>
 
     <!-- Main Content Section -->
     <div id="content">
-        <!-- Navbar and search form -->
-       
-
         <!-- Scraping History Section -->
         <section id="history" class="section-padding">
             <h2>Scraping History</h2>
+            <button id="exportCsv" class="btn btn-primary">Export History to CSV</button>
             <table id="historyTable" class="table table-bordered scraping-history-table">
                 <thead>
                     <tr>
@@ -43,12 +42,13 @@
                         <th>Date</th>
                         <th>Status</th>
                         <th>Details</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
-                <button id="exportCsv">Export History to CSV</button>
                 <tbody>
                     {% for record in history %}
-                     <tr>
+                    <tr>
                         <td>{{ record.id }}</td>
                         <td>{{ record.url }}</td>
                         <td>{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
@@ -69,126 +69,33 @@
     </footer>
 
     <!-- Popup Modal -->
-    <div id="popup" style="display: none;">
-        <div id="popupContent">
-            <span id="closePopup">&times;</span>
-            <h2>Scraped Data Details</h2>
+    <div id="popup" class="modal">
+        <div class="popup-content">
+            <span id="closePopup" class="close">&times;</span>
             <div id="scrapedData"></div>
         </div>
     </div>
 
-    <!-- Update Record Form (Hidden by default) -->
-    <div id="editForm" style="display: none;">
-        <h3>Edit Record</h3>
-        <form id="updateRecordForm" method="POST">
-            <label>Title: <input type="text" id="editTitle" name="title"></label><br>
-            <label>Description: <input type="text" id="editDescription" name="description"></label><br>
-            <label>Emails: <input type="text" id="editEmails" name="emails"></label><br>
-            <label>Phones: <input type="text" id="editPhones" name="phones"></label><br>
-            <label>Addresses: <input type="text" id="editAddresses" name="addresses"></label><br>
-            <button type="submit">Save Changes</button>
-        </form>
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span id="closeEditModal" class="close">&times;</span>
+            <form id="editForm">
+                <input type="hidden" id="editRecordId" name="id">
+                <label for="editTitle">Title:</label>
+                <input type="text" id="editTitle" name="title">
+                <label for="editDescription">Description:</label>
+                <textarea id="editDescription" name="description"></textarea>
+                <label for="editEmails">Emails:</label>
+                <input type="text" id="editEmails" name="emails">
+                <label for="editPhones">Phones:</label>
+                <input type="text" id="editPhones" name="phones">
+                <label for="editAddresses">Addresses:</label>
+                <input type="text" id="editAddresses" name="addresses">
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
     </div>
-
-    <!-- Script for handling form submission and AJAX requests -->
-    <script>
-        $(document).ready(function () {
-            // Ensure all buttons are visible when the page loads
-            $('.view-details').show();
-            $('.edit-record').show();
-            $('.delete-record').show();
-
-            // Handle form submission for scraping
-            $('#scrapeForm').on('submit', function (event) {
-                event.preventDefault();
-                const url = $('#url').val();
-
-                if (url) {
-                    $.ajax({
-                        url: "{{ url_for('main.scrape') }}",
-                        type: "POST",
-                        data: { "url": url },
-                        success: function (response) {
-                            $('#resultTitle').text(response.data.title || 'N/A');
-                            $('#resultDescription').text(response.data.description || 'N/A');
-                            $('#resultEmails').text(response.data.emails.join(', ') || 'N/A');
-                            $('#resultPhones').text(response.data.phones.join(', ') || 'N/A');
-                            $('#resultAddresses').text(response.data.addresses.join(', ') || 'N/A');
-                        },
-                        error: function () {
-                            alert("Error scraping the data. Please try again.");
-                        }
-                    });
-                } else {
-                    alert("Please enter a URL.");
-                }
-            });
-
-            // Handle view details click
-            $('.view-details').on('click', function (event) {
-                event.preventDefault();
-                const recordId = $(this).data('id');
-
-                $.ajax({
-                    url: `/api/scraped_data/${recordId}`,
-                    type: "GET",
-                    success: function (response) {
-                        $('#scrapedData').html(`
-                            <p><strong>Title:</strong> ${response.title}</p>
-                            <p><strong>Description:</strong> ${response.description}</p>
-                            <p><strong>Emails:</strong> ${response.emails.join(', ')}</p>
-                            <p><strong>Phones:</strong> ${response.phones.join(', ')}</p>
-                            <p><strong>Addresses:</strong> ${response.addresses.join(', ')}</p>
-                        `);
-                        $('#popup').show();
-                    },
-                    error: function () {
-                        alert("Failed to load details.");
-                    }
-                });
-            });
-
-            // Handle delete record
-            $('.delete-record').on('click', function (event) {
-                event.preventDefault();
-                const recordId = $(this).data('id');
-
-                if (confirm("Are you sure you want to delete this record?")) {
-                    $.ajax({
-                        url: `/api/delete_record/${recordId}`,
-                        type: "DELETE",
-                        success: function (response) {
-                            alert(response.message);
-                            location.reload();
-                        },
-                        error: function () {
-                            alert("Failed to delete the record.");
-                        }
-                    });
-                }
-            });
-
-            // Close the modal
-            $('#closePopup').on('click', function () {
-                $('#popup').hide();
-            });
-
-            // Export to CSV
-            $('#exportCsv').on('click', function () {
-                window.location.href = '/api/export_csv';
-            });
-        });
-
-        $(document).ready(function () {
-        // Debugging
-        console.log($('.edit-record').length); // Check if elements are found
-        console.log($('.delete-record').length); // Check if elements are found
-
-        $('.view-details').show();
-        $('.edit-record').show();
-        $('.delete-record').show();
-        });
-    </script>
 </body>
 
 </html>
