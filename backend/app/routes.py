@@ -123,19 +123,32 @@ def get_scraped_data(id):
 def register():
     form = SignupForm()
     if form.validate_on_submit():
+        # Check if the username or email already exists
+        existing_user = User.query.filter((User.username == form.username.data) | (User.email == form.email.data)).first()
+
+        if existing_user:
+            flash('Username or email already exists. Please try a different one.', 'danger')
+            return redirect(url_for('main.register'))
+
+        # Hash the password and create a new user
         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
         new_user = User(
             username=form.username.data,
             email=form.email.data,
             password_hash=hashed_password
         )
+
+        # Add the new user to the database
         db.session.add(new_user)
         db.session.commit()
+
         flash('Account created successfully! You can now log in.', 'success')
         return redirect(url_for('main.login'))
     else:
         flash('Sign up failed. Please check your input.', 'danger')
+
     return render_template('signup.html', form=form)
+
 
 # Route for login
 @main.route('/login', methods=['GET', 'POST'])
